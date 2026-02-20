@@ -5,7 +5,7 @@ function App() {
   const timerRef = useRef(null);
 
   function startTimer() {
-    if (timerRef.current) return; // Prevent multiple timers
+    if (timerRef.current) return; 
     timerRef.current = setInterval(() => {
       setCount(prevCount => prevCount + 1);
     }, 1000);
