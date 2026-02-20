@@ -1,9 +1,18 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 function App() {
   const [count, setCount] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const timerRef = useRef(null);
+
+  function formatTime(ms) {
+    const totalSeconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    const centiseconds = Math.floor((ms % 1000) / 10);
+
+    return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}.${centiseconds.toString().padStart(2, "0")}`;
+  }
 
   function toggleTimer() {
     if (isRunning) {
@@ -14,8 +23,8 @@ function App() {
     } else {
       // Resume the timer
       timerRef.current = setInterval(() => {
-        setCount((prevCount) => prevCount + 1);
-      }, 1000);
+        setCount((prevCount) => prevCount + 10);
+      }, 10);
       setIsRunning(true);
     }
   }
@@ -27,9 +36,14 @@ function App() {
     setIsRunning(false);
   }
 
+  useEffect(() => {
+    // This cleanup function runs when the component is destroyed
+    return () => clearInterval(timerRef.current);
+  }, []);
+
   return (
     <div>
-      <h1>Count: {count}</h1>
+      <h1>{formatTime(count)}</h1>
       <button onClick={toggleTimer}>{isRunning ? "Pause" : "Resume"}</button>
       <button onClick={resetTimer}>Reset Timer</button>
     </div>
