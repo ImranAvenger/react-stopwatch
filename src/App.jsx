@@ -64,7 +64,9 @@ function App() {
       <button onClick={handleRecordLap} disabled={!isRunning}>
         Lap
       </button>
-      <button onClick={handleResetTimer}>Reset Timer</button>
+      <button onClick={handleResetTimer} disabled={isRunning}>
+        Reset Timer
+      </button>
       {laps.length > 0 && (
         <div>
           <h2>Laps</h2>
