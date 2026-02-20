@@ -40,7 +40,14 @@ function App() {
 
   function recordLap() {
     if (isRunning) {
-      setLaps([...laps, count]);
+      const lastLapTime =
+        laps.length > 0 ? laps[laps.length - 1].cumulativeTime : 0;
+      const differenceTime = count - lastLapTime;
+      const newLap = {
+        cumulativeTime: count,
+        differenceTime: differenceTime,
+      };
+      setLaps([...laps, newLap]);
     }
   }
 
@@ -63,7 +70,8 @@ function App() {
           <ol>
             {laps.map((lap, index) => (
               <li key={index}>
-                Lap {index + 1}: {formatTime(lap)}
+                Lap {index + 1}: {formatTime(lap.cumulativeTime)} (Difference:{" "}
+                {formatTime(lap.differenceTime)})
               </li>
             ))}
           </ol>
