@@ -39,7 +39,7 @@ function App() {
   }
 
   function recordLap() {
-    if (isRunning || count > 0) {
+    if (isRunning) {
       setLaps([...laps, count]);
     }
   }
@@ -53,9 +53,10 @@ function App() {
     <div>
       <h1>{formatTime(count)}</h1>
       <button onClick={toggleTimer}>{isRunning ? "Pause" : "Resume"}</button>
-      <button onClick={recordLap}>Lap</button>
+      <button onClick={recordLap} disabled={!isRunning}>
+        Lap
+      </button>
       <button onClick={resetTimer}>Reset Timer</button>
-      
       {laps.length > 0 && (
         <div>
           <h2>Laps</h2>
