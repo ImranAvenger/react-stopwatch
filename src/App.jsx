@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 function App() {
   const [count, setCount] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
+  const [laps, setLaps] = useState([]);
   const timerRef = useRef(null);
 
   function formatTime(ms) {
@@ -34,6 +35,13 @@ function App() {
     timerRef.current = null;
     setCount(0);
     setIsRunning(false);
+    setLaps([]);
+  }
+
+  function recordLap() {
+    if (isRunning || count > 0) {
+      setLaps([...laps, count]);
+    }
   }
 
   useEffect(() => {
@@ -45,7 +53,21 @@ function App() {
     <div>
       <h1>{formatTime(count)}</h1>
       <button onClick={toggleTimer}>{isRunning ? "Pause" : "Resume"}</button>
+      <button onClick={recordLap}>Lap</button>
       <button onClick={resetTimer}>Reset Timer</button>
+      
+      {laps.length > 0 && (
+        <div>
+          <h2>Laps</h2>
+          <ol>
+            {laps.map((lap, index) => (
+              <li key={index}>
+                Lap {index + 1}: {formatTime(lap)}
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
     </div>
   );
 }
