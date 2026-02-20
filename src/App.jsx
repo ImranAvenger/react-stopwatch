@@ -15,7 +15,7 @@ function App() {
     return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}.${centiseconds.toString().padStart(2, "0")}`;
   }
 
-  function toggleTimer() {
+  function handleToggleTimer() {
     if (isRunning) {
       // Pause the timer
       clearInterval(timerRef.current);
@@ -30,7 +30,7 @@ function App() {
     }
   }
 
-  function resetTimer() {
+  function handleResetTimer() {
     clearInterval(timerRef.current);
     timerRef.current = null;
     setCount(0);
@@ -38,14 +38,13 @@ function App() {
     setLaps([]);
   }
 
-  function recordLap() {
+  function handleRecordLap() {
     if (isRunning) {
-      const lastLapTime =
-        laps.length > 0 ? laps[laps.length - 1].cumulativeTime : 0;
-      const differenceTime = count - lastLapTime;
+      const lastLapTime = laps.length > 0 ? laps[laps.length - 1].totalTime : 0;
+      const lapTime = count - lastLapTime;
       const newLap = {
-        cumulativeTime: count,
-        differenceTime: differenceTime,
+        totalTime: count,
+        lapTime: lapTime,
       };
       setLaps([...laps, newLap]);
     }
@@ -59,19 +58,21 @@ function App() {
   return (
     <div>
       <h1>{formatTime(count)}</h1>
-      <button onClick={toggleTimer}>{isRunning ? "Pause" : "Resume"}</button>
-      <button onClick={recordLap} disabled={!isRunning}>
+      <button onClick={handleToggleTimer}>
+        {isRunning ? "Pause" : "Resume"}
+      </button>
+      <button onClick={handleRecordLap} disabled={!isRunning}>
         Lap
       </button>
-      <button onClick={resetTimer}>Reset Timer</button>
+      <button onClick={handleResetTimer}>Reset Timer</button>
       {laps.length > 0 && (
         <div>
           <h2>Laps</h2>
           <ol>
             {laps.map((lap, index) => (
               <li key={index}>
-                Lap {index + 1}: {formatTime(lap.cumulativeTime)} (Difference:{" "}
-                {formatTime(lap.differenceTime)})
+                Lap {index + 1}: {formatTime(lap.totalTime)} (Difference:{" "}
+                {formatTime(lap.lapTime)})
               </li>
             ))}
           </ol>
