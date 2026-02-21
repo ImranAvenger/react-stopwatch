@@ -77,13 +77,13 @@ function App() {
                 No laps recorded yet
               </p>
             ) : (
-              laps.map((lap, index) => (
+              [...laps].reverse().map((lap, index) => (
                 <div
-                  key={index}
+                  key={laps.length - 1 - index}
                   className="flex justify-between items-center bg-slate-700 p-4 rounded-lg hover:bg-slate-600 transition-colors"
                 >
                   <span className="text-cyan-400 font-semibold">
-                    Lap {index + 1}
+                    Lap {laps.length - index}
                   </span>
                   <div className="text-right">
                     <div className="text-white font-mono text-sm">
