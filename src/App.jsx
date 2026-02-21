@@ -39,7 +39,7 @@ function App() {
   }
 
   function handleRecordLap() {
-    if (isRunning) {
+    if (isRunning && laps.length < 99) {
       const lastLapTime = laps.length > 0 ? laps[laps.length - 1].totalTime : 0;
       const lapTime = count - lastLapTime;
       const newLap = {
@@ -61,7 +61,10 @@ function App() {
       <button onClick={handleToggleTimer}>
         {isRunning ? "Pause" : "Resume"}
       </button>
-      <button onClick={handleRecordLap} disabled={!isRunning}>
+      <button
+        onClick={handleRecordLap}
+        disabled={!isRunning || laps.length >= 99}
+      >
         Lap
       </button>
       <button onClick={handleResetTimer} disabled={isRunning}>
