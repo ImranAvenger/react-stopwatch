@@ -56,16 +56,52 @@ function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-linear-to-br from-slate-900 to-slate-800 flex items-center justify-center p-4">
+      <div className="w-full max-w-md h-screen max-h-175 flex flex-col">
         {/* Timer Display */}
-        <div className="bg-slate-800 rounded-3xl shadow-2xl p-8 mb-8 border border-slate-700">
+        <div className="bg-slate-800 rounded-3xl shadow-2xl p-8 mb-4 border border-slate-700 shrink-0">
           <h1 className="text-6xl font-mono font-bold text-center text-cyan-400 py-8 bg-slate-900 rounded-2xl">
             {formatTime(count)}
           </h1>
+        </div>
 
-          {/* Buttons */}
-          <div className="grid grid-cols-3 gap-3 mt-8">
+        {/* Laps Section */}
+        <div className="bg-slate-800 rounded-3xl shadow-2xl p-8 mb-4 border border-slate-700 flex-1 overflow-hidden flex flex-col">
+          <h2 className="text-2xl font-bold text-white mb-4 flex items-center shrink-0">
+            <span className="text-cyan-400 mr-2">📋</span> Laps ({laps.length}
+            /99)
+          </h2>
+          <div className="space-y-2 overflow-y-auto flex-1">
+            {laps.length === 0 ? (
+              <p className="text-gray-400 text-center py-8">
+                No laps recorded yet
+              </p>
+            ) : (
+              laps.map((lap, index) => (
+                <div
+                  key={index}
+                  className="flex justify-between items-center bg-slate-700 p-4 rounded-lg hover:bg-slate-600 transition-colors"
+                >
+                  <span className="text-cyan-400 font-semibold">
+                    Lap {index + 1}
+                  </span>
+                  <div className="text-right">
+                    <div className="text-white font-mono text-sm">
+                      {formatTime(lap.totalTime)}
+                    </div>
+                    <div className="text-gray-400 font-mono text-xs">
+                      Δ {formatTime(lap.lapTime)}
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* Buttons */}
+        <div className="bg-slate-800 rounded-3xl shadow-2xl p-8 border border-slate-700 flex-shrink-0">
+          <div className="grid grid-cols-3 gap-3">
             <button
               onClick={handleToggleTimer}
               className="bg-green-500 hover:bg-green-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200"
@@ -88,36 +124,6 @@ function App() {
             </button>
           </div>
         </div>
-
-        {/* Laps Section */}
-        {laps.length > 0 && (
-          <div className="bg-slate-800 rounded-3xl shadow-2xl p-8 border border-slate-700">
-            <h2 className="text-2xl font-bold text-white mb-4 flex items-center">
-              <span className="text-cyan-400 mr-2">📋</span> Laps ({laps.length}
-              /99)
-            </h2>
-            <div className="space-y-2 max-h-96 overflow-y-auto">
-              {laps.map((lap, index) => (
-                <div
-                  key={index}
-                  className="flex justify-between items-center bg-slate-700 p-4 rounded-lg hover:bg-slate-600 transition-colors"
-                >
-                  <span className="text-cyan-400 font-semibold">
-                    Lap {index + 1}
-                  </span>
-                  <div className="text-right">
-                    <div className="text-white font-mono text-sm">
-                      {formatTime(lap.totalTime)}
-                    </div>
-                    <div className="text-gray-400 font-mono text-xs">
-                      Δ {formatTime(lap.lapTime)}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
