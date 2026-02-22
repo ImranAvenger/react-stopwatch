@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { audioManager } from "../utils/audioManager";
 
 export function useAudio(runningAudioUrl) {
@@ -10,11 +10,11 @@ export function useAudio(runningAudioUrl) {
     });
   }, [runningAudioUrl]);
 
-  const playSound = (frequency, duration) => {
+  const playSound = useCallback((frequency, duration) => {
     audioManager.playSound(frequency, duration);
-  };
+  }, []);
 
-  const startRunningSound = () => {
+  const startRunningSound = useCallback(() => {
     const audioBuffer = audioManager.getAudioBuffer();
     const ctx = audioManager.getContext();
 
@@ -50,9 +50,9 @@ export function useAudio(runningAudioUrl) {
     } catch (e) {
       console.error("Failed to start running sound:", e);
     }
-  };
+  }, []);
 
-  const stopRunningSound = () => {
+  const stopRunningSound = useCallback(() => {
     if (audioSourceRef.current) {
       try {
         audioSourceRef.current.stop();
@@ -62,7 +62,7 @@ export function useAudio(runningAudioUrl) {
       }
       audioSourceRef.current = null;
     }
-  };
+  }, []);
 
   useEffect(() => {
     return () => {

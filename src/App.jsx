@@ -30,7 +30,7 @@ export default function App() {
     } else {
       stopRunningSound();
     }
-  }, [isRunning, startRunningSound, stopRunningSound]);
+  }, [isRunning]);
 
   // Timer state management (pause/resume)
   function handleToggleTimer() {
