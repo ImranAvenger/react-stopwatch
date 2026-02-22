@@ -1,14 +1,23 @@
 @import "tailwindcss";
 
-@keyframes slideDown {
-  from {
-    max-height: 0;
+@keyframes waterfall {
+  0% {
+    grid-template-rows: 0fr;
     opacity: 0;
     margin-bottom: 0;
   }
-  to {
-    max-height: 100px;
+  100% {
+    grid-template-rows: 1fr;
     opacity: 1;
-    margin-bottom: 8px;
+    margin-bottom: 8px; /* Match your space-y-2 */
   }
+}
+
+.animate-waterfall {
+  display: grid;
+  animation: waterfall 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.waterfall-content {
+  overflow: hidden;
 }

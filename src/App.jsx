@@ -78,23 +78,21 @@ function App() {
                 No laps recorded yet
               </p>
             ) : (
-              [...laps].reverse().map((lap, index) => (
-                <div
-                  key={lap.id}
-                  className="flex justify-between items-center bg-slate-700 p-4 rounded-lg hover:bg-slate-600 overflow-hidden"
-                  style={{
-                    animation: `slideDown 0.5s ease-out ${index * 0.08}s backwards`,
-                  }}
-                >
-                  <span className="text-cyan-400 font-semibold">
-                    Lap {laps.findIndex((l) => l.id === lap.id) + 1}
-                  </span>
-                  <div className="text-right">
-                    <div className="text-white font-mono text-sm">
-                      {formatTime(lap.totalTime)}
-                    </div>
-                    <div className="text-gray-400 font-mono text-xs">
-                      Δ {formatTime(lap.lapTime)}
+              [...laps].reverse().map((lap) => (
+                <div key={lap.id} className="animate-waterfall">
+                  <div className="waterfall-content">
+                    <div className="flex justify-between items-center bg-slate-700 p-4 rounded-lg hover:bg-slate-600">
+                      <span className="text-cyan-400 font-semibold">
+                        Lap {laps.findIndex((l) => l.id === lap.id) + 1}
+                      </span>
+                      <div className="text-right">
+                        <div className="text-white font-mono text-sm">
+                          {formatTime(lap.totalTime)}
+                        </div>
+                        <div className="text-gray-400 font-mono text-xs">
+                          Δ {formatTime(lap.lapTime)}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
