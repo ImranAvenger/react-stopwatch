@@ -2,23 +2,26 @@ import { useState, useRef, useEffect, memo } from "react";
 
 // Memoized to prevent unnecessary re-renders of digits that haven't changed
 const DigitDisplay = memo(({ value }) => {
+  const spanRef = useRef(null);
   const prevValueRef = useRef(value);
-  const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
     if (prevValueRef.current !== value) {
       prevValueRef.current = value;
-      const timeout = setTimeout(() => {
-        setAnimate(true);
-        const clearTimeout2 = setTimeout(() => setAnimate(false), 100);
-        return () => clearTimeout(clearTimeout2);
-      }, 0);
-      return () => clearTimeout(timeout);
+
+      if (spanRef.current) {
+        // Remove animation class to reset it
+        spanRef.current.classList.remove("animate-digit-slide");
+        // Trigger reflow to restart the animation
+        void spanRef.current.offsetWidth;
+        // Add animation class back
+        spanRef.current.classList.add("animate-digit-slide");
+      }
     }
   }, [value]);
 
   return (
-    <span className={animate ? "animate-digit-slide" : ""}>
+    <span ref={spanRef} className="animate-digit-slide">
       {value}
     </span>
   );
@@ -28,7 +31,7 @@ export default function App() {
   const [count, setCount] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [laps, setLaps] = useState([]);
-  
+
   const timerRef = useRef(null);
   const startTimeRef = useRef(0); // For precision tracking
 
@@ -50,7 +53,6 @@ export default function App() {
       clearInterval(timerRef.current);
       setIsRunning(false);
     } else {
-      setIsRunning(true);
       // Logic: Subtract the current 'count' from NOW to get the original start point
       startTimeRef.current = Date.now() - count;
 
@@ -58,7 +60,8 @@ export default function App() {
         const now = Date.now();
         const nextCount = now - startTimeRef.current;
 
-        if (nextCount >= 3600000) { // 60-minute cap
+        if (nextCount >= 3600000) {
+          // 60-minute cap
           setCount(3600000);
           setIsRunning(false);
           clearInterval(timerRef.current);
@@ -66,6 +69,8 @@ export default function App() {
           setCount(nextCount);
         }
       }, 10);
+
+      setIsRunning(true);
     }
   }
 
@@ -98,17 +103,20 @@ export default function App() {
   return (
     <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md h-[90vh] max-h-200 flex flex-col">
-        
         {/* Timer Display */}
         <div className="bg-slate-800 rounded-3xl shadow-2xl p-6 mb-4 border border-slate-700 shrink-0">
           <div className="bg-slate-900 rounded-2xl py-10 flex justify-center items-center">
-            <h1 className="text-6xl font-mono font-bold text-cyan-400 tabular-numbers">
-              {formatTime(count).split("").map((char, idx) => (
-                // Only animate characters that aren't separators
-                (/[0-9]/).test(char) 
-                  ? <DigitDisplay key={idx} value={char} /> 
-                  : <span key={idx}>{char}</span>
-              ))}
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-mono font-bold text-cyan-400 tabular-numbers">
+              {formatTime(count)
+                .split("")
+                .map((char, idx) =>
+                  // Only animate characters that aren't separators
+                  /[0-9]/.test(char) ? (
+                    <DigitDisplay key={idx} value={char} />
+                  ) : (
+                    <span key={idx}>{char}</span>
+                  ),
+                )}
             </h1>
           </div>
         </div>
@@ -117,9 +125,11 @@ export default function App() {
         <div className="bg-slate-800 rounded-3xl shadow-2xl p-6 mb-4 border border-slate-700 flex-1 overflow-hidden flex flex-col">
           <h2 className="text-xl font-bold text-white mb-4 flex justify-between items-center">
             <span>📋 Laps</span>
-            <span className="text-sm text-slate-400 font-normal">{laps.length} / 99</span>
+            <span className="text-sm text-slate-400 font-normal">
+              {laps.length} / 99
+            </span>
           </h2>
-          
+
           <div className="overflow-y-auto flex-1 pr-2 space-y-2">
             {laps.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-slate-500 opacity-50">
@@ -134,7 +144,9 @@ export default function App() {
                   <div key={lap.id} className="animate-waterfall">
                     <div className="waterfall-content">
                       <div className="flex justify-between items-center bg-slate-700/50 p-4 rounded-xl border border-slate-600/50 hover:bg-slate-700 transition-colors">
-                        <span className="text-cyan-400 font-bold">Lap {lapNumber}</span>
+                        <span className="text-cyan-400 font-bold">
+                          Lap {lapNumber}
+                        </span>
                         <div className="text-right">
                           <div className="text-white font-mono text-sm">
                             {formatTime(lap.totalTime)}
@@ -158,7 +170,9 @@ export default function App() {
             <button
               onClick={handleToggleTimer}
               className={`${
-                isRunning ? "bg-amber-500 hover:bg-amber-600" : "bg-emerald-500 hover:bg-emerald-600"
+                isRunning
+                  ? "bg-amber-500 hover:bg-amber-600"
+                  : "bg-emerald-500 hover:bg-emerald-600"
               } text-white font-bold py-4 rounded-xl transition-all active:scale-95`}
             >
               {isRunning ? "Pause" : "Resume"}
@@ -179,7 +193,6 @@ export default function App() {
             </button>
           </div>
         </div>
-
       </div>
     </div>
   );
