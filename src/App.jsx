@@ -1,5 +1,24 @@
 import { useState, useRef, useEffect } from "react";
 
+function DigitDisplay({ value }) {
+  const prevValueRef = useRef(value);
+  const [animate, setAnimate] = useState(false);
+
+  useEffect(() => {
+    if (prevValueRef.current !== value) {
+      prevValueRef.current = value;
+      const timer = setTimeout(() => setAnimate(true), 0);
+      const resetTimer = setTimeout(() => setAnimate(false), 300);
+      return () => {
+        clearTimeout(timer);
+        clearTimeout(resetTimer);
+      };
+    }
+  }, [value]);
+
+  return <span className={animate ? "animate-digit-slide" : ""}>{value}</span>;
+}
+
 function App() {
   const [count, setCount] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
@@ -62,7 +81,11 @@ function App() {
         {/* Timer Display */}
         <div className="bg-slate-800 rounded-3xl shadow-2xl p-8 mb-4 border border-slate-700 shrink-0">
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-mono font-bold text-center text-cyan-400 py-8 bg-slate-900 rounded-2xl">
-            {formatTime(count)}
+            {formatTime(count)
+              .split("")
+              .map((digit, idx) => (
+                <DigitDisplay key={`digit-${idx}`} value={digit} />
+              ))}
           </h1>
         </div>
 
