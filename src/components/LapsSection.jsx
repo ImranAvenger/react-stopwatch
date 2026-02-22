@@ -10,7 +10,7 @@ export default function LapsSection({ laps }) {
         </span>
       </h2>
 
-      <div className="overflow-y-auto flex-1 pr-2 space-y-2">
+      <div className="overflow-y-auto flex-1 pr-2 space-y-2 laps-scroll">
         {laps.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-slate-500 opacity-50">
             <span className="text-4xl mb-2">⏱️</span>
