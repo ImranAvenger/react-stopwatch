@@ -61,7 +61,7 @@ function App() {
       <div className="w-full max-w-md h-screen max-h-175 flex flex-col">
         {/* Timer Display */}
         <div className="bg-slate-800 rounded-3xl shadow-2xl p-8 mb-4 border border-slate-700 shrink-0">
-          <h1 className="text-6xl font-mono font-bold text-center text-cyan-400 py-8 bg-slate-900 rounded-2xl">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-mono font-bold text-center text-cyan-400 py-8 bg-slate-900 rounded-2xl">
             {formatTime(count)}
           </h1>
         </div>
@@ -102,7 +102,7 @@ function App() {
         </div>
 
         {/* Buttons */}
-        <div className="bg-slate-800 rounded-3xl shadow-2xl p-8 border border-slate-700 flex-shrink-0">
+        <div className="bg-slate-800 rounded-3xl shadow-2xl p-8 border border-slate-700 shrink-0">
           <div className="grid grid-cols-3 gap-3">
             <button
               onClick={handleToggleTimer}
