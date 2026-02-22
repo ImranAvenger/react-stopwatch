@@ -8,8 +8,11 @@ const DigitDisplay = memo(({ value }) => {
   useEffect(() => {
     if (prevValueRef.current !== value) {
       prevValueRef.current = value;
-      setAnimate(true);
-      const timeout = setTimeout(() => setAnimate(false), 100);
+      const timeout = setTimeout(() => {
+        setAnimate(true);
+        const clearTimeout2 = setTimeout(() => setAnimate(false), 100);
+        return () => clearTimeout(clearTimeout2);
+      }, 0);
       return () => clearTimeout(timeout);
     }
   }, [value]);
@@ -21,7 +24,7 @@ const DigitDisplay = memo(({ value }) => {
   );
 });
 
-export default function Stopwatch() {
+export default function App() {
   const [count, setCount] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [laps, setLaps] = useState([]);
@@ -94,7 +97,7 @@ export default function Stopwatch() {
 
   return (
     <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
-      <div className="w-full max-w-md h-[90vh] max-h-[800px] flex flex-col">
+      <div className="w-full max-w-md h-[90vh] max-h-200 flex flex-col">
         
         {/* Timer Display */}
         <div className="bg-slate-800 rounded-3xl shadow-2xl p-6 mb-4 border border-slate-700 shrink-0">
