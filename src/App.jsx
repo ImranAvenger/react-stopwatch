@@ -68,9 +68,9 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
-      <div className="w-full max-w-md h-[90vh] max-h-200 flex flex-col landscape:max-w-full landscape:h-[95vh] landscape:flex-row landscape:gap-4">
+      <div className="w-full max-w-md h-[90vh] grid grid-cols-1 grid-rows-2 gap-4 landscape:max-w-full landscape:h-[95vh] landscape:grid-cols-2 landscape:grid-rows-1">
         {/* Left side: Display and Controls */}
-        <div className="bg-slate-800 rounded-3xl shadow-2xl p-6 border border-slate-700 flex flex-col gap-4 landscape:w-1/2 landscape:flex-1 landscape:justify-between">
+        <div className="bg-slate-800 rounded-3xl shadow-2xl p-6 border border-slate-700 flex flex-col gap-4 landscape:justify-between landscape:min-h-0">
           <TimerDisplay count={count} />
           <ControlPanel
             isRunning={isRunning}
@@ -83,7 +83,7 @@ export default function App() {
         </div>
 
         {/* Right side: Laps */}
-        <div className="landscape:w-1/2">
+        <div className="landscape:min-h-0">
           <LapsSection laps={laps} />
         </div>
       </div>
