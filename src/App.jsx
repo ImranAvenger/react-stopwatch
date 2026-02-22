@@ -43,6 +43,7 @@ function App() {
       const lastLapTime = laps.length > 0 ? laps[laps.length - 1].totalTime : 0;
       const lapTime = count - lastLapTime;
       const newLap = {
+        id: Date.now(),
         totalTime: count,
         lapTime: lapTime,
       };
@@ -79,11 +80,14 @@ function App() {
             ) : (
               [...laps].reverse().map((lap, index) => (
                 <div
-                  key={laps.length - 1 - index}
-                  className="flex justify-between items-center bg-slate-700 p-4 rounded-lg hover:bg-slate-600 transition-colors"
+                  key={lap.id}
+                  className="flex justify-between items-center bg-slate-700 p-4 rounded-lg hover:bg-slate-600 overflow-hidden"
+                  style={{
+                    animation: `slideDown 0.5s ease-out ${index * 0.08}s backwards`,
+                  }}
                 >
                   <span className="text-cyan-400 font-semibold">
-                    Lap {laps.length - index}
+                    Lap {laps.findIndex((l) => l.id === lap.id) + 1}
                   </span>
                   <div className="text-right">
                     <div className="text-white font-mono text-sm">
