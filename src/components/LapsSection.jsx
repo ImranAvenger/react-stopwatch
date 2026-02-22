@@ -2,7 +2,7 @@ import { formatTime } from "../utils/formatTime";
 
 export default function LapsSection({ laps }) {
   return (
-    <div className="bg-slate-800 rounded-3xl shadow-2xl p-6 mb-4 border border-slate-700 flex-1 overflow-hidden flex flex-col">
+    <div className="bg-slate-800 rounded-3xl shadow-2xl p-6 mb-4 border border-slate-700 flex-1 overflow-hidden flex flex-col landscape:mb-0 landscape:h-full">
       <h2 className="text-xl font-bold text-white mb-4 flex justify-between items-center">
         <span>📋 Laps</span>
         <span className="text-sm text-slate-400 font-normal">

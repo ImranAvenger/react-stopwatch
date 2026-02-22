@@ -68,17 +68,24 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
-      <div className="w-full max-w-md h-[90vh] max-h-200 flex flex-col">
-        <TimerDisplay count={count} />
-        <LapsSection laps={laps} />
-        <ControlPanel
-          isRunning={isRunning}
-          onToggleTimer={handleToggleTimer}
-          onRecordLap={handleRecordLap}
-          onReset={handleResetTimer}
-          canRecordLap={isRunning && !isFull()}
-          canReset={!isRunning || count === 0}
-        />
+      <div className="w-full max-w-md h-[90vh] max-h-200 flex flex-col landscape:max-w-full landscape:h-[95vh] landscape:flex-row landscape:gap-4">
+        {/* Left side: Display and Controls */}
+        <div className="bg-slate-800 rounded-3xl shadow-2xl p-6 border border-slate-700 flex flex-col gap-4 landscape:w-1/2 landscape:flex-1 landscape:justify-between">
+          <TimerDisplay count={count} />
+          <ControlPanel
+            isRunning={isRunning}
+            onToggleTimer={handleToggleTimer}
+            onRecordLap={handleRecordLap}
+            onReset={handleResetTimer}
+            canRecordLap={isRunning && !isFull()}
+            canReset={!isRunning || count === 0}
+          />
+        </div>
+
+        {/* Right side: Laps */}
+        <div className="landscape:w-1/2">
+          <LapsSection laps={laps} />
+        </div>
       </div>
     </div>
   );
