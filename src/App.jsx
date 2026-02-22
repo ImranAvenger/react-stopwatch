@@ -1,51 +1,68 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, memo } from "react";
 
-function DigitDisplay({ value }) {
+// Memoized to prevent unnecessary re-renders of digits that haven't changed
+const DigitDisplay = memo(({ value }) => {
   const prevValueRef = useRef(value);
   const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
     if (prevValueRef.current !== value) {
       prevValueRef.current = value;
-      const timer = setTimeout(() => setAnimate(true), 0);
-      const resetTimer = setTimeout(() => setAnimate(false), 300);
-      return () => {
-        clearTimeout(timer);
-        clearTimeout(resetTimer);
-      };
+      setAnimate(true);
+      const timeout = setTimeout(() => setAnimate(false), 100);
+      return () => clearTimeout(timeout);
     }
   }, [value]);
 
-  return <span className={animate ? "animate-digit-slide" : ""}>{value}</span>;
-}
+  return (
+    <span className={animate ? "animate-digit-slide" : ""}>
+      {value}
+    </span>
+  );
+});
 
-function App() {
+export default function Stopwatch() {
   const [count, setCount] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [laps, setLaps] = useState([]);
+  
   const timerRef = useRef(null);
+  const startTimeRef = useRef(0); // For precision tracking
 
+  // Formatting Logic
   function formatTime(ms) {
     const totalSeconds = Math.floor(ms / 1000);
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
     const centiseconds = Math.floor((ms % 1000) / 10);
 
-    return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}.${centiseconds.toString().padStart(2, "0")}`;
+    return `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}.${centiseconds.toString().padStart(2, "0")}`;
   }
 
+  // Accurate Timer Logic
   function handleToggleTimer() {
     if (isRunning) {
-      // Pause the timer
       clearInterval(timerRef.current);
-      timerRef.current = null;
       setIsRunning(false);
     } else {
-      // Resume the timer
-      timerRef.current = setInterval(() => {
-        setCount((prevCount) => prevCount + 10);
-      }, 10);
       setIsRunning(true);
+      // Logic: Subtract the current 'count' from NOW to get the original start point
+      startTimeRef.current = Date.now() - count;
+
+      timerRef.current = setInterval(() => {
+        const now = Date.now();
+        const nextCount = now - startTimeRef.current;
+
+        if (nextCount >= 3600000) { // 60-minute cap
+          setCount(3600000);
+          setIsRunning(false);
+          clearInterval(timerRef.current);
+        } else {
+          setCount(nextCount);
+        }
+      }, 10);
     }
   }
 
@@ -62,96 +79,105 @@ function App() {
       const lastLapTime = laps.length > 0 ? laps[laps.length - 1].totalTime : 0;
       const lapTime = count - lastLapTime;
       const newLap = {
-        id: Date.now(),
+        id: crypto.randomUUID(), // More robust than Date.now()
         totalTime: count,
         lapTime: lapTime,
       };
-      setLaps([...laps, newLap]);
+      setLaps((prev) => [...prev, newLap]);
     }
   }
 
+  // Cleanup on unmount
   useEffect(() => {
-    // This cleanup function runs when the component is destroyed
     return () => clearInterval(timerRef.current);
   }, []);
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-900 to-slate-800 flex items-center justify-center p-4">
-      <div className="w-full max-w-md h-screen max-h-175 flex flex-col">
+    <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
+      <div className="w-full max-w-md h-[90vh] max-h-[800px] flex flex-col">
+        
         {/* Timer Display */}
-        <div className="bg-slate-800 rounded-3xl shadow-2xl p-8 mb-4 border border-slate-700 shrink-0">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-mono font-bold text-center text-cyan-400 py-8 bg-slate-900 rounded-2xl">
-            {formatTime(count)
-              .split("")
-              .map((digit, idx) => (
-                <DigitDisplay key={`digit-${idx}`} value={digit} />
+        <div className="bg-slate-800 rounded-3xl shadow-2xl p-6 mb-4 border border-slate-700 shrink-0">
+          <div className="bg-slate-900 rounded-2xl py-10 flex justify-center items-center">
+            <h1 className="text-6xl font-mono font-bold text-cyan-400 tabular-numbers">
+              {formatTime(count).split("").map((char, idx) => (
+                // Only animate characters that aren't separators
+                (/[0-9]/).test(char) 
+                  ? <DigitDisplay key={idx} value={char} /> 
+                  : <span key={idx}>{char}</span>
               ))}
-          </h1>
+            </h1>
+          </div>
         </div>
 
         {/* Laps Section */}
-        <div className="bg-slate-800 rounded-3xl shadow-2xl p-8 mb-4 border border-slate-700 flex-1 overflow-hidden flex flex-col">
-          <h2 className="text-2xl font-bold text-white mb-4 flex items-center shrink-0">
-            <span className="text-cyan-400 mr-2">📋</span> Laps ({laps.length}
-            /99)
+        <div className="bg-slate-800 rounded-3xl shadow-2xl p-6 mb-4 border border-slate-700 flex-1 overflow-hidden flex flex-col">
+          <h2 className="text-xl font-bold text-white mb-4 flex justify-between items-center">
+            <span>📋 Laps</span>
+            <span className="text-sm text-slate-400 font-normal">{laps.length} / 99</span>
           </h2>
-          <div className="space-y-2 overflow-y-auto flex-1">
+          
+          <div className="overflow-y-auto flex-1 pr-2 space-y-2">
             {laps.length === 0 ? (
-              <p className="text-gray-400 text-center py-8">
-                No laps recorded yet
-              </p>
+              <div className="h-full flex flex-col items-center justify-center text-slate-500 opacity-50">
+                <span className="text-4xl mb-2">⏱️</span>
+                <p>Ready for your first lap?</p>
+              </div>
             ) : (
-              [...laps].reverse().map((lap) => (
-                <div key={lap.id} className="animate-waterfall">
-                  <div className="waterfall-content">
-                    <div className="flex justify-between items-center bg-slate-700 p-4 rounded-lg hover:bg-slate-600">
-                      <span className="text-cyan-400 font-semibold">
-                        Lap {laps.findIndex((l) => l.id === lap.id) + 1}
-                      </span>
-                      <div className="text-right">
-                        <div className="text-white font-mono text-sm">
-                          {formatTime(lap.totalTime)}
-                        </div>
-                        <div className="text-gray-400 font-mono text-xs">
-                          Δ {formatTime(lap.lapTime)}
+              [...laps].reverse().map((lap, index) => {
+                // Efficiently calculate lap index for display
+                const lapNumber = laps.length - index;
+                return (
+                  <div key={lap.id} className="animate-waterfall">
+                    <div className="waterfall-content">
+                      <div className="flex justify-between items-center bg-slate-700/50 p-4 rounded-xl border border-slate-600/50 hover:bg-slate-700 transition-colors">
+                        <span className="text-cyan-400 font-bold">Lap {lapNumber}</span>
+                        <div className="text-right">
+                          <div className="text-white font-mono text-sm">
+                            {formatTime(lap.totalTime)}
+                          </div>
+                          <div className="text-slate-400 font-mono text-xs">
+                            + {formatTime(lap.lapTime)}
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
         </div>
 
-        {/* Buttons */}
-        <div className="bg-slate-800 rounded-3xl shadow-2xl p-8 border border-slate-700 shrink-0">
-          <div className="grid grid-cols-3 gap-3">
+        {/* Control Panel */}
+        <div className="bg-slate-800 rounded-3xl shadow-2xl p-6 border border-slate-700 shrink-0">
+          <div className="grid grid-cols-3 gap-4">
             <button
               onClick={handleToggleTimer}
-              className="bg-green-500 hover:bg-green-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200"
+              className={`${
+                isRunning ? "bg-amber-500 hover:bg-amber-600" : "bg-emerald-500 hover:bg-emerald-600"
+              } text-white font-bold py-4 rounded-xl transition-all active:scale-95`}
             >
               {isRunning ? "Pause" : "Resume"}
             </button>
             <button
               onClick={handleRecordLap}
               disabled={!isRunning || laps.length >= 99}
-              className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200"
+              className="bg-sky-500 hover:bg-sky-600 disabled:bg-slate-700 disabled:text-slate-500 text-white font-bold py-4 rounded-xl transition-all active:scale-95"
             >
               Lap
             </button>
             <button
               onClick={handleResetTimer}
-              disabled={isRunning}
-              className="bg-red-500 hover:bg-red-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200"
+              disabled={isRunning && count !== 0}
+              className="bg-rose-500 hover:bg-rose-600 disabled:bg-slate-700 disabled:text-slate-500 text-white font-bold py-4 rounded-xl transition-all active:scale-95"
             >
               Reset
             </button>
           </div>
         </div>
+
       </div>
     </div>
   );
 }
-
-export default App;
