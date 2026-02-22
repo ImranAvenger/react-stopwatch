@@ -4,27 +4,26 @@ import { useState, useRef, useEffect, memo } from "react";
 const DigitDisplay = memo(({ value }) => {
   const spanRef = useRef(null);
   const prevValueRef = useRef(value);
+  const timerRef = useRef(null);
 
   useEffect(() => {
-    if (prevValueRef.current !== value) {
+    if (prevValueRef.current !== value && spanRef.current) {
       prevValueRef.current = value;
+      spanRef.current.classList.add("animate-digit-slide");
 
-      if (spanRef.current) {
-        // Remove animation class to reset it
-        spanRef.current.classList.remove("animate-digit-slide");
-        // Trigger reflow to restart the animation
-        void spanRef.current.offsetWidth;
-        // Add animation class back
-        spanRef.current.classList.add("animate-digit-slide");
-      }
+      timerRef.current = setTimeout(() => {
+        spanRef.current?.classList.remove("animate-digit-slide");
+      }, 300);
     }
+
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
   }, [value]);
 
-  return (
-    <span ref={spanRef} className="animate-digit-slide">
-      {value}
-    </span>
-  );
+  return <span ref={spanRef}>{value}</span>;
 });
 
 export default function App() {
@@ -47,7 +46,7 @@ export default function App() {
       .padStart(2, "0")}.${centiseconds.toString().padStart(2, "0")}`;
   }
 
-  // Accurate Timer Logic
+  // Timer state management (pause/resume)
   function handleToggleTimer() {
     if (isRunning) {
       clearInterval(timerRef.current);
@@ -74,6 +73,7 @@ export default function App() {
     }
   }
 
+  // Reset timer to initial state
   function handleResetTimer() {
     clearInterval(timerRef.current);
     timerRef.current = null;
@@ -82,12 +82,18 @@ export default function App() {
     setLaps([]);
   }
 
+  // Record a lap with total time and delta
   function handleRecordLap() {
     if (isRunning && laps.length < 99) {
       const lastLapTime = laps.length > 0 ? laps[laps.length - 1].totalTime : 0;
       const lapTime = count - lastLapTime;
+      // Browser-compatible ID generation
+      const id =
+        typeof crypto !== "undefined" && crypto.randomUUID
+          ? crypto.randomUUID()
+          : `${Date.now()}-${Math.random()}`;
       const newLap = {
-        id: crypto.randomUUID(), // More robust than Date.now()
+        id,
         totalTime: count,
         lapTime: lapTime,
       };
@@ -95,7 +101,7 @@ export default function App() {
     }
   }
 
-  // Cleanup on unmount
+  // Cleanup interval on component unmount
   useEffect(() => {
     return () => clearInterval(timerRef.current);
   }, []);
