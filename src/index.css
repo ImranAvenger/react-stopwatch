@@ -65,15 +65,8 @@
   display: inline-block;
 }
 
-/* Dynamic fluid font sizing for timer digits */
 .timer-digits {
-  font-size: clamp(2rem, 12vw, 15rem);
-}
-
-@media (orientation: landscape) {
-  .timer-digits {
-    font-size: clamp(2rem, 15vh, 12rem);
-  }
+  font-size: clamp(2rem, 7vw, 12rem);
 }
 
 /* Landscape orientation support */
