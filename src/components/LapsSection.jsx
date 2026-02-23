@@ -1,7 +1,10 @@
-import { FaCopy } from "react-icons/fa6";
+import { useState } from "react";
+import { FaCopy, FaCheck } from "react-icons/fa6";
 import { formatTime } from "../utils/formatTime";
 
 export default function LapsSection({ laps }) {
+  const [isCopied, setIsCopied] = useState(false);
+
   const handleCopyLaps = () => {
     if (laps.length === 0) return;
 
@@ -12,6 +15,13 @@ export default function LapsSection({ laps }) {
       .join("\n");
 
     navigator.clipboard.writeText(lapText);
+    setIsCopied(true);
+
+    const timer = setTimeout(() => {
+      setIsCopied(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
   };
 
   return (
@@ -19,15 +29,18 @@ export default function LapsSection({ laps }) {
       <h2 className="text-xl font-bold text-white mb-4 flex justify-between items-center">
         <span>📋 Laps</span>
         <div className="flex items-center gap-3">
-          {laps.length > 0 && (
-            <button
-              onClick={handleCopyLaps}
-              className="p-2 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-lg transition-colors enabled:cursor-pointer"
-              title="Copy lap records"
-            >
-              <FaCopy size={16} />
-            </button>
-          )}
+          <button
+            onClick={handleCopyLaps}
+            disabled={laps.length === 0}
+            className={`p-2 rounded-lg transition-colors enabled:cursor-pointer ${
+              isCopied
+                ? "bg-emerald-500/20 text-emerald-400"
+                : "text-slate-400 hover:text-white hover:bg-slate-700/50 disabled:text-slate-600 disabled:cursor-not-allowed"
+            }`}
+            title={laps.length === 0 ? "No laps to copy" : "Copy lap records"}
+          >
+            {isCopied ? <FaCheck size={16} /> : <FaCopy size={16} />}
+          </button>
           <span className="text-sm text-slate-400 font-normal">
             {laps.length} / 99
           </span>
