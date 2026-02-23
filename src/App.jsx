@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import runningSound from "./assets/stopwatch-running.m4a";
 import TimerDisplay from "./components/TimerDisplay";
 import LapsSection from "./components/LapsSection";
@@ -33,7 +33,7 @@ export default function App() {
   }, [isRunning, startRunningSound, stopRunningSound]);
 
   // Timer state management (pause/resume)
-  function handleToggleTimer() {
+  const handleToggleTimer = useCallback(() => {
     if (isRunning) {
       timer.pause();
       setIsRunning(false);
@@ -45,26 +45,63 @@ export default function App() {
       // Play start sound
       playSound(600, 0.08);
     }
-  }
+  }, [isRunning, count, timer, playSound]);
 
   // Reset timer to initial state
-  function handleResetTimer() {
+  const handleResetTimer = useCallback(() => {
     timer.clear();
     setCount(0);
     setIsRunning(false);
     resetLaps();
     // Play reset sound
     playSound(400, 0.1);
-  }
+  }, [timer, resetLaps, playSound]);
 
   // Record a lap with total time and delta
-  function handleRecordLap() {
+  const handleRecordLap = useCallback(() => {
     if (isRunning && !isFull()) {
       addLap(count);
       // Play lap sound effect (beep)
       playSound(800, 0.1);
     }
-  }
+  }, [isRunning, count, isFull, addLap, playSound]);
+
+  // Handle keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Prevent conflicts with form inputs
+      if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") {
+        return;
+      }
+
+      switch (e.code) {
+        case "Space":
+          e.preventDefault();
+          handleToggleTimer();
+          break;
+        case "KeyL":
+          handleRecordLap();
+          break;
+        case "KeyR":
+          if (!isRunning) {
+            handleResetTimer();
+          }
+          break;
+        default:
+          break;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [
+    isRunning,
+    count,
+    handleToggleTimer,
+    handleRecordLap,
+    handleResetTimer,
+    isFull,
+  ]);
 
   return (
     <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
