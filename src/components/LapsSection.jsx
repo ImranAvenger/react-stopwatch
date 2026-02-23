@@ -32,14 +32,23 @@ export default function LapsSection({ laps }) {
           <button
             onClick={handleCopyLaps}
             disabled={laps.length === 0}
-            className={`p-2 rounded-lg transition-colors enabled:cursor-pointer ${
+            className={`px-2 py-2 rounded-lg transition-all duration-300 enabled:cursor-pointer flex items-center justify-center ${
               isCopied
-                ? "bg-emerald-500/20 text-emerald-400"
+                ? "px-3 bg-emerald-500/20 text-emerald-400"
                 : "text-slate-400 hover:text-white hover:bg-slate-700/50 disabled:text-slate-600 disabled:cursor-not-allowed"
             }`}
             title={laps.length === 0 ? "No laps to copy" : "Copy lap records"}
           >
             {isCopied ? <FaCheck size={16} /> : <FaCopy size={16} />}
+            <span
+              className={`text-sm font-medium transition-all duration-300 ${
+                isCopied
+                  ? "opacity-100 w-auto ml-2"
+                  : "opacity-0 w-0 overflow-hidden"
+              }`}
+            >
+              Copied
+            </span>
           </button>
           <span className="text-sm text-slate-400 font-normal">
             {laps.length} / 99
