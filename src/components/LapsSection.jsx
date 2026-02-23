@@ -69,17 +69,15 @@ export default function LapsSection({ laps }) {
             return (
               <div key={lap.id} className="animate-waterfall">
                 <div className="waterfall-content">
-                  <div className="flex justify-between items-center bg-slate-700/50 p-4 rounded-xl border border-slate-600/50 hover:bg-slate-700 transition-colors">
-                    <span className="text-cyan-400 font-bold">
-                      Lap {lapNumber}
+                  <div className="flex justify-between items-center bg-linear-to-r from-slate-700/30 to-slate-700/50 p-5 rounded-xl border border-slate-600/30 hover:border-slate-500/50 hover:bg-gradient-to-r hover:from-slate-700/50 hover:to-slate-700/70 transition-all">
+                    <span className="text-xl font-bold text-cyan-400">
+                      {lapNumber}
                     </span>
-                    <div className="text-right">
-                      <div className="text-white font-mono text-sm">
-                        {formatTime(lap.totalTime)}
-                      </div>
-                      <div className="text-slate-400 font-mono text-xs">
-                        + {formatTime(lap.lapTime)}
-                      </div>
+                    <div className="text-amber-400 font-mono font-semibold text-lg">
+                      +{formatTime(lap.lapTime)}
+                    </div>
+                    <div className="text-emerald-400 font-mono font-semibold text-lg">
+                      {formatTime(lap.totalTime)}
                     </div>
                   </div>
                 </div>
