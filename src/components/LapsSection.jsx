@@ -53,7 +53,7 @@ export default function LapsSection({ laps, shortcutsGuideRef }) {
             className={`px-2 py-2 rounded-lg transition-all duration-300 enabled:cursor-pointer flex items-center justify-center ${
               isCopied
                 ? "px-3 bg-emerald-500/20 text-emerald-400"
-                : "text-slate-400 hover:text-white hover:bg-slate-700/50 disabled:text-slate-600 disabled:cursor-not-allowed"
+                : "text-slate-400 hover:text-white hover:bg-slate-700/50 disabled:text-slate-600"
             }`}
             title={
               laps.length === 0 ? "No laps to copy" : "Copy lap records (C)"
