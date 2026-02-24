@@ -10,7 +10,7 @@ export default function LapsSection({ laps }) {
 
     const lapText = laps
       .map((lap, index) => {
-        return `Lap ${index + 1}: ${formatTime(lap.totalTime)} (+${formatTime(lap.lapTime)})`;
+        return `${index < 9 ? "0" + (index + 1) : index + 1} +${formatTime(lap.lapTime)} ${formatTime(lap.totalTime)}`;
       })
       .join("\n");
 
