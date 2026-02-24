@@ -3,12 +3,15 @@ import { FaCopy, FaCheck, FaKeyboard } from "react-icons/fa6";
 import { formatTime } from "../utils/formatTime";
 import LapStatistics from "./LapStatistics";
 import SoundToggle from "./SoundToggle";
+import ThemeToggle from "./ThemeToggle";
 
 export default function LapsSection({
   laps,
   shortcutsGuideRef,
   isSoundEnabled,
   onToggleSound,
+  isDarkMode,
+  onToggleTheme,
 }) {
   const [isCopied, setIsCopied] = useState(false);
 
@@ -50,7 +53,13 @@ export default function LapsSection({
   }, [laps, handleCopyLaps]);
 
   return (
-    <div className="bg-slate-800 rounded-3xl shadow-2xl p-6 mb-0 border border-slate-700 overflow-hidden flex flex-col landscape:mb-0 h-full">
+    <div
+      className={`rounded-3xl shadow-2xl p-6 mb-0 overflow-hidden flex flex-col landscape:mb-0 h-full transition-colors duration-300 ${
+        isDarkMode
+          ? "bg-slate-800 border border-slate-700"
+          : "bg-white border border-slate-300"
+      }`}
+    >
       <div className="mb-4 flex justify-between items-center">
         <div className="flex items-center gap-3">
           <button
@@ -59,7 +68,9 @@ export default function LapsSection({
             className={`px-2 py-2 rounded-lg transition-all duration-300 enabled:cursor-pointer flex items-center justify-center ${
               isCopied
                 ? "bg-emerald-500/20 text-emerald-400"
-                : "text-slate-400 hover:text-white hover:bg-slate-700/50 disabled:text-slate-600"
+                : isDarkMode
+                  ? "text-slate-400 hover:text-white hover:bg-slate-700/50 disabled:text-slate-600"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-200 disabled:text-slate-400"
             }`}
             title={
               laps.length === 0 ? "No laps to copy" : "Copy lap records (C)"
@@ -83,7 +94,11 @@ export default function LapsSection({
           </button>
           <button
             onClick={() => shortcutsGuideRef?.current?.toggleGuide()}
-            className="hidden lg:flex px-2 py-2 rounded-lg transition-all duration-300 enabled:cursor-pointer text-slate-400 hover:text-white hover:bg-slate-700/50"
+            className={`hidden lg:flex px-2 py-2 rounded-lg transition-all duration-300 enabled:cursor-pointer ${
+              isDarkMode
+                ? "text-slate-400 hover:text-white hover:bg-slate-700/50"
+                : "text-slate-600 hover:text-slate-900 hover:bg-slate-200"
+            }`}
             title="Keyboard Shortcuts (Press ? or Click)"
             aria-label="Show keyboard shortcuts"
           >
@@ -92,18 +107,28 @@ export default function LapsSection({
           <SoundToggle
             isSoundEnabled={isSoundEnabled}
             onToggle={onToggleSound}
+            isDarkMode={isDarkMode}
           />
+          <ThemeToggle isDarkMode={isDarkMode} onToggle={onToggleTheme} />
         </div>
-        <span className="text-sm text-slate-400 font-normal">
+        <span
+          className={`text-sm font-normal transition-colors duration-300 ${
+            isDarkMode ? "text-slate-400" : "text-slate-600"
+          }`}
+        >
           {laps.length} / 99
         </span>
       </div>
 
-      <LapStatistics laps={laps} />
+      <LapStatistics laps={laps} isDarkMode={isDarkMode} />
 
       <div className="overflow-y-auto flex-1 min-h-0 pr-2 space-y-2 laps-scroll">
         {laps.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center text-slate-500 opacity-50">
+          <div
+            className={`h-full flex flex-col items-center justify-center opacity-50 transition-colors duration-300 ${
+              isDarkMode ? "text-slate-500" : "text-slate-400"
+            }`}
+          >
             <span className="text-4xl mb-2">⏱️</span>
             <p>Ready for your first lap?</p>
           </div>

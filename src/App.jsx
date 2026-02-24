@@ -8,6 +8,7 @@ import { useTimer } from "./hooks/useTimer";
 import { useAudio } from "./hooks/useAudio";
 import { useLaps } from "./hooks/useLaps";
 import { useSoundToggle } from "./hooks/useSoundToggle";
+import { useTheme } from "./hooks/useTheme";
 
 export default function App() {
   // Initialize count from localStorage
@@ -18,6 +19,7 @@ export default function App() {
   const [isRunning, setIsRunning] = useState(false);
   const shortcutsGuideRef = useRef(null);
   const { isSoundEnabled, toggleSound } = useSoundToggle();
+  const { isDarkMode, toggleTheme } = useTheme();
   const { laps, addLap, reset: resetLaps, isFull } = useLaps();
   const timer = useTimer(setCount, handleTimerComplete);
   const { playSound, startRunningSound, stopRunningSound } =
@@ -132,6 +134,12 @@ export default function App() {
             toggleSound();
           }
           break;
+        case "KeyT": // Shift + T
+          if (e.shiftKey) {
+            e.preventDefault();
+            toggleTheme();
+          }
+          break;
         case "Slash": // Question mark key (Shift + /)
           if (e.shiftKey) {
             e.preventDefault();
@@ -152,15 +160,20 @@ export default function App() {
     handleRecordLap,
     handleResetTimer,
     toggleSound,
+    toggleTheme,
     isFull,
   ]);
 
   return (
-    <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
+    <div
+      className={`min-h-screen flex items-center justify-center p-4 transition-colors duration-300 ${isDarkMode ? "bg-slate-900" : "bg-white"}`}
+    >
       <div className="w-full h-[90vh] grid grid-cols-1 grid-rows-2 gap-4 landscape:max-w-full landscape:h-[95vh] landscape:grid-cols-2 landscape:grid-rows-1">
         {/* Left side: Display and Controls */}
-        <div className="bg-slate-800 rounded-3xl shadow-2xl p-6 border border-slate-700 flex flex-col gap-4 landscape:justify-between landscape:min-h-0 w-full">
-          <TimerDisplay count={count} />
+        <div
+          className={`rounded-3xl shadow-2xl p-6 border flex flex-col gap-4 landscape:justify-between landscape:min-h-0 w-full transition-colors duration-300 ${isDarkMode ? "bg-slate-800 border-slate-700" : "bg-slate-50 border-slate-300"}`}
+        >
+          <TimerDisplay count={count} isDarkMode={isDarkMode} />
           <ControlPanel
             isRunning={isRunning}
             onToggleTimer={handleToggleTimer}
@@ -168,6 +181,7 @@ export default function App() {
             onReset={handleResetTimer}
             canRecordLap={isRunning && !isFull()}
             canReset={!isRunning && count > 0}
+            isDarkMode={isDarkMode}
           />
         </div>
 
@@ -178,12 +192,14 @@ export default function App() {
             shortcutsGuideRef={shortcutsGuideRef}
             isSoundEnabled={isSoundEnabled}
             onToggleSound={toggleSound}
+            isDarkMode={isDarkMode}
+            onToggleTheme={toggleTheme}
           />
         </div>
       </div>
 
       {/* Keyboard Shortcuts Guide */}
-      <KeyboardShortcutsGuide ref={shortcutsGuideRef} />
+      <KeyboardShortcutsGuide ref={shortcutsGuideRef} isDarkMode={isDarkMode} />
     </div>
   );
 }
