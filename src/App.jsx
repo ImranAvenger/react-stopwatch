@@ -85,7 +85,7 @@ export default function App() {
           handleRecordLap();
           break;
         case "KeyR":
-          if (!isRunning) {
+          if (!isRunning && count > 0) {
             handleResetTimer();
           }
           break;
@@ -123,7 +123,7 @@ export default function App() {
             onRecordLap={handleRecordLap}
             onReset={handleResetTimer}
             canRecordLap={isRunning && !isFull()}
-            canReset={!isRunning || count === 0}
+            canReset={!isRunning && count > 0}
           />
         </div>
 
