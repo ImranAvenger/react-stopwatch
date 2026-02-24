@@ -31,6 +31,7 @@ const KeyboardShortcutsGuide = forwardRef((props, ref) => {
     { key: "L", action: "Record a lap" },
     { key: "R", action: "Reset the stopwatch" },
     { key: "C", action: "Copy all lap records" },
+    { key: "Ctrl + S", action: "Toggle sound on/off" },
     { key: "? (Shift + /)", action: "Show this guide" },
     { key: "Esc", action: "Close this guide" },
   ];

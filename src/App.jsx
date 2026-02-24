@@ -4,35 +4,63 @@ import TimerDisplay from "./components/TimerDisplay";
 import LapsSection from "./components/LapsSection";
 import ControlPanel from "./components/ControlPanel";
 import KeyboardShortcutsGuide from "./components/KeyboardShortcutsGuide";
+import SoundToggle from "./components/SoundToggle";
 import { useTimer } from "./hooks/useTimer";
 import { useAudio } from "./hooks/useAudio";
 import { useLaps } from "./hooks/useLaps";
+import { useSoundToggle } from "./hooks/useSoundToggle";
 
 export default function App() {
-  const [count, setCount] = useState(0);
+  // Initialize count from localStorage
+  const [count, setCount] = useState(() => {
+    const savedCount = localStorage.getItem("stopwatch_count");
+    return savedCount ? parseInt(savedCount, 10) : 0;
+  });
   const [isRunning, setIsRunning] = useState(false);
   const shortcutsGuideRef = useRef(null);
+  const { isSoundEnabled, toggleSound } = useSoundToggle();
   const { laps, addLap, reset: resetLaps, isFull } = useLaps();
   const timer = useTimer(setCount, handleTimerComplete);
   const { playSound, startRunningSound, stopRunningSound } =
     useAudio(runningSound);
 
+  // Save count to localStorage when paused or before page unloads
+  useEffect(() => {
+    if (!isRunning && count > 0) {
+      localStorage.setItem("stopwatch_count", count.toString());
+    }
+  }, [isRunning, count]);
+
+  // Save count before page unloads
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (count > 0) {
+        localStorage.setItem("stopwatch_count", count.toString());
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [count]);
+
   function handleTimerComplete(finalCount) {
     setCount(finalCount);
     setIsRunning(false);
     // Play completion sound
-    playSound(1000, 0.15);
-    playSound(1200, 0.15);
+    if (isSoundEnabled) {
+      playSound(1000, 0.15);
+      playSound(1200, 0.15);
+    }
   }
 
   // Handle running sound effect with seamless looping using Web Audio API
   useEffect(() => {
-    if (isRunning) {
+    if (isRunning && isSoundEnabled) {
       startRunningSound();
     } else {
       stopRunningSound();
     }
-  }, [isRunning, startRunningSound, stopRunningSound]);
+  }, [isRunning, isSoundEnabled, startRunningSound, stopRunningSound]);
 
   // Timer state management (pause/resume)
   const handleToggleTimer = useCallback(() => {
@@ -40,14 +68,18 @@ export default function App() {
       timer.pause();
       setIsRunning(false);
       // Play pause sound
-      playSound(600, 0.08);
+      if (isSoundEnabled) {
+        playSound(600, 0.08);
+      }
     } else {
       timer.start(count);
       setIsRunning(true);
       // Play start sound
-      playSound(600, 0.08);
+      if (isSoundEnabled) {
+        playSound(600, 0.08);
+      }
     }
-  }, [isRunning, count, timer, playSound]);
+  }, [isRunning, count, timer, isSoundEnabled, playSound]);
 
   // Reset timer to initial state
   const handleResetTimer = useCallback(() => {
@@ -55,18 +87,24 @@ export default function App() {
     setCount(0);
     setIsRunning(false);
     resetLaps();
+    // Clear saved count from localStorage
+    localStorage.removeItem("stopwatch_count");
     // Play reset sound
-    playSound(400, 0.1);
-  }, [timer, resetLaps, playSound]);
+    if (isSoundEnabled) {
+      playSound(400, 0.1);
+    }
+  }, [timer, isSoundEnabled, resetLaps, playSound]);
 
   // Record a lap with total time and delta
   const handleRecordLap = useCallback(() => {
     if (isRunning && !isFull()) {
       addLap(count);
       // Play lap sound effect (beep)
-      playSound(800, 0.1);
+      if (isSoundEnabled) {
+        playSound(800, 0.1);
+      }
     }
-  }, [isRunning, count, isFull, addLap, playSound]);
+  }, [isRunning, count, isFull, isSoundEnabled, addLap, playSound]);
 
   // Handle keyboard shortcuts
   useEffect(() => {
@@ -89,6 +127,12 @@ export default function App() {
             handleResetTimer();
           }
           break;
+        case "KeyS": // Control + S
+          if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            toggleSound();
+          }
+          break;
         case "Slash": // Question mark key (Shift + /)
           if (e.shiftKey) {
             e.preventDefault();
@@ -108,6 +152,7 @@ export default function App() {
     handleToggleTimer,
     handleRecordLap,
     handleResetTimer,
+    toggleSound,
     isFull,
   ]);
 
@@ -125,6 +170,12 @@ export default function App() {
             canRecordLap={isRunning && !isFull()}
             canReset={!isRunning && count > 0}
           />
+          <div className="flex justify-center">
+            <SoundToggle
+              isSoundEnabled={isSoundEnabled}
+              onToggle={toggleSound}
+            />
+          </div>
         </div>
 
         {/* Right side: Laps */}

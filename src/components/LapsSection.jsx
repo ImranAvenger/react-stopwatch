@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { FaCopy, FaCheck, FaKeyboard } from "react-icons/fa6";
 import { formatTime } from "../utils/formatTime";
+import LapStatistics from "./LapStatistics";
 
 export default function LapsSection({ laps, shortcutsGuideRef }) {
   const [isCopied, setIsCopied] = useState(false);
@@ -88,6 +89,8 @@ export default function LapsSection({ laps, shortcutsGuideRef }) {
           </span>
         </div>
       </h2>
+
+      <LapStatistics laps={laps} />
 
       <div className="overflow-y-auto flex-1 min-h-0 pr-2 space-y-2 laps-scroll">
         {laps.length === 0 ? (
