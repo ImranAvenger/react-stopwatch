@@ -49,10 +49,11 @@ const KeyboardShortcutsGuide = forwardRef((props, ref) => {
               </h3>
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-slate-400 hover:text-white transition-colors cursor-pointer"
+                className="text-slate-500 hover:text-slate-300 transition-colors duration-200 cursor-pointer p-1 rounded hover:bg-slate-700/30"
                 aria-label="Close shortcuts guide"
+                title="Close (Esc)"
               >
-                <FaX size={24} />
+                <FaX size={18} />
               </button>
             </div>
 
