@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { FaCopy, FaCheck } from "react-icons/fa6";
 import { formatTime } from "../utils/formatTime";
 
 export default function LapsSection({ laps }) {
   const [isCopied, setIsCopied] = useState(false);
 
-  const handleCopyLaps = () => {
+  const handleCopyLaps = useCallback(() => {
     if (laps.length === 0) return;
 
     const lapText = laps
@@ -22,7 +22,7 @@ export default function LapsSection({ laps }) {
     }, 2000);
 
     return () => clearTimeout(timer);
-  };
+  }, [laps]);
 
   // Handle keyboard shortcut for copy
   useEffect(() => {
@@ -40,7 +40,7 @@ export default function LapsSection({ laps }) {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [laps]);
+  }, [laps, handleCopyLaps]);
 
   return (
     <div className="bg-slate-800 rounded-3xl shadow-2xl p-6 mb-0 border border-slate-700 overflow-hidden flex flex-col landscape:mb-0 h-full">
