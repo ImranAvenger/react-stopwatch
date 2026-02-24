@@ -2,8 +2,14 @@ import { useState, useEffect, useCallback } from "react";
 import { FaCopy, FaCheck, FaKeyboard } from "react-icons/fa6";
 import { formatTime } from "../utils/formatTime";
 import LapStatistics from "./LapStatistics";
+import SoundToggle from "./SoundToggle";
 
-export default function LapsSection({ laps, shortcutsGuideRef }) {
+export default function LapsSection({
+  laps,
+  shortcutsGuideRef,
+  isSoundEnabled,
+  onToggleSound,
+}) {
   const [isCopied, setIsCopied] = useState(false);
 
   const handleCopyLaps = useCallback(() => {
@@ -45,15 +51,14 @@ export default function LapsSection({ laps, shortcutsGuideRef }) {
 
   return (
     <div className="bg-slate-800 rounded-3xl shadow-2xl p-6 mb-0 border border-slate-700 overflow-hidden flex flex-col landscape:mb-0 h-full">
-      <h2 className="text-xl font-bold text-white mb-4 flex justify-between items-center">
-        <span>📋 Laps</span>
+      <div className="mb-4 flex justify-between items-center">
         <div className="flex items-center gap-3">
           <button
             onClick={handleCopyLaps}
             disabled={laps.length === 0}
             className={`px-2 py-2 rounded-lg transition-all duration-300 enabled:cursor-pointer flex items-center justify-center ${
               isCopied
-                ? "px-3 bg-emerald-500/20 text-emerald-400"
+                ? "bg-emerald-500/20 text-emerald-400"
                 : "text-slate-400 hover:text-white hover:bg-slate-700/50 disabled:text-slate-600"
             }`}
             title={
@@ -84,11 +89,15 @@ export default function LapsSection({ laps, shortcutsGuideRef }) {
           >
             <FaKeyboard size={16} />
           </button>
-          <span className="text-sm text-slate-400 font-normal">
-            {laps.length} / 99
-          </span>
+          <SoundToggle
+            isSoundEnabled={isSoundEnabled}
+            onToggle={onToggleSound}
+          />
         </div>
-      </h2>
+        <span className="text-sm text-slate-400 font-normal">
+          {laps.length} / 99
+        </span>
+      </div>
 
       <LapStatistics laps={laps} />
 

@@ -4,10 +4,10 @@ export default function SoundToggle({ isSoundEnabled, onToggle }) {
   return (
     <button
       onClick={onToggle}
-      className={`w-12 h-12 rounded-full text-white text-lg flex items-center justify-center transition-all active:scale-95 hover:shadow-lg cursor-pointer ${
+      className={`px-2 py-2 rounded-lg transition-all duration-300 enabled:cursor-pointer flex items-center justify-center ${
         isSoundEnabled
-          ? "bg-purple-500 hover:bg-purple-600 hover:shadow-purple-500/50"
-          : "bg-slate-600 hover:bg-slate-700 hover:shadow-slate-600/50"
+          ? "text-slate-400 hover:text-white hover:bg-slate-700/50"
+          : "text-slate-600 hover:text-slate-400 hover:bg-slate-700/50"
       }`}
       title={
         isSoundEnabled
@@ -18,7 +18,11 @@ export default function SoundToggle({ isSoundEnabled, onToggle }) {
         isSoundEnabled ? "Disable sound effects" : "Enable sound effects"
       }
     >
-      {isSoundEnabled ? <FaVolumeHigh /> : <FaVolumeXmark />}
+      {isSoundEnabled ? (
+        <FaVolumeHigh size={16} />
+      ) : (
+        <FaVolumeXmark size={16} />
+      )}
     </button>
   );
 }

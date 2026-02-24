@@ -4,7 +4,6 @@ import TimerDisplay from "./components/TimerDisplay";
 import LapsSection from "./components/LapsSection";
 import ControlPanel from "./components/ControlPanel";
 import KeyboardShortcutsGuide from "./components/KeyboardShortcutsGuide";
-import SoundToggle from "./components/SoundToggle";
 import { useTimer } from "./hooks/useTimer";
 import { useAudio } from "./hooks/useAudio";
 import { useLaps } from "./hooks/useLaps";
@@ -170,17 +169,16 @@ export default function App() {
             canRecordLap={isRunning && !isFull()}
             canReset={!isRunning && count > 0}
           />
-          <div className="flex justify-center">
-            <SoundToggle
-              isSoundEnabled={isSoundEnabled}
-              onToggle={toggleSound}
-            />
-          </div>
         </div>
 
         {/* Right side: Laps */}
         <div className="landscape:min-h-0 w-full">
-          <LapsSection laps={laps} shortcutsGuideRef={shortcutsGuideRef} />
+          <LapsSection
+            laps={laps}
+            shortcutsGuideRef={shortcutsGuideRef}
+            isSoundEnabled={isSoundEnabled}
+            onToggleSound={toggleSound}
+          />
         </div>
       </div>
 
