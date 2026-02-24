@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
-import { FaCopy, FaCheck } from "react-icons/fa6";
+import { FaCopy, FaCheck, FaKeyboard } from "react-icons/fa6";
 import { formatTime } from "../utils/formatTime";
 
-export default function LapsSection({ laps }) {
+export default function LapsSection({ laps, shortcutsGuideRef }) {
   const [isCopied, setIsCopied] = useState(false);
 
   const handleCopyLaps = useCallback(() => {
@@ -74,6 +74,14 @@ export default function LapsSection({ laps }) {
             >
               Copied
             </span>
+          </button>
+          <button
+            onClick={() => shortcutsGuideRef?.current?.toggleGuide()}
+            className="hidden lg:flex px-2 py-2 rounded-lg transition-all duration-300 enabled:cursor-pointer text-slate-400 hover:text-white hover:bg-slate-700/50"
+            title="Keyboard Shortcuts (Press ? or Click)"
+            aria-label="Show keyboard shortcuts"
+          >
+            <FaKeyboard size={16} />
           </button>
           <span className="text-sm text-slate-400 font-normal">
             {laps.length} / 99

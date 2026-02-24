@@ -1,8 +1,9 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import runningSound from "./assets/stopwatch-running.m4a";
 import TimerDisplay from "./components/TimerDisplay";
 import LapsSection from "./components/LapsSection";
 import ControlPanel from "./components/ControlPanel";
+import KeyboardShortcutsGuide from "./components/KeyboardShortcutsGuide";
 import { useTimer } from "./hooks/useTimer";
 import { useAudio } from "./hooks/useAudio";
 import { useLaps } from "./hooks/useLaps";
@@ -10,6 +11,7 @@ import { useLaps } from "./hooks/useLaps";
 export default function App() {
   const [count, setCount] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
+  const shortcutsGuideRef = useRef(null);
   const { laps, addLap, reset: resetLaps, isFull } = useLaps();
   const timer = useTimer(setCount, handleTimerComplete);
   const { playSound, startRunningSound, stopRunningSound } =
@@ -87,6 +89,12 @@ export default function App() {
             handleResetTimer();
           }
           break;
+        case "Slash": // Question mark key (Shift + /)
+          if (e.shiftKey) {
+            e.preventDefault();
+            shortcutsGuideRef.current?.toggleGuide();
+          }
+          break;
         default:
           break;
       }
@@ -121,9 +129,12 @@ export default function App() {
 
         {/* Right side: Laps */}
         <div className="landscape:min-h-0 w-full">
-          <LapsSection laps={laps} />
+          <LapsSection laps={laps} shortcutsGuideRef={shortcutsGuideRef} />
         </div>
       </div>
+
+      {/* Keyboard Shortcuts Guide */}
+      <KeyboardShortcutsGuide ref={shortcutsGuideRef} />
     </div>
   );
 }
