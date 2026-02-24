@@ -1,4 +1,9 @@
-import { useState, useImperativeHandle, forwardRef } from "react";
+import {
+  useState,
+  useImperativeHandle,
+  forwardRef,
+  useEffect as React_useEffect,
+} from "react";
 import { FaKeyboard, FaX } from "react-icons/fa6";
 
 const KeyboardShortcutsGuide = forwardRef((props, ref) => {
@@ -10,12 +15,24 @@ const KeyboardShortcutsGuide = forwardRef((props, ref) => {
     closeGuide: () => setIsOpen(false),
   }));
 
+  // Handle Escape key to close the modal
+  React_useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.code === "Escape" && isOpen) {
+        setIsOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen]);
+
   const shortcuts = [
     { key: "Space", action: "Start / Pause the timer" },
     { key: "L", action: "Record a lap" },
     { key: "R", action: "Reset the stopwatch" },
     { key: "C", action: "Copy all lap records" },
     { key: "? (Shift + /)", action: "Show this guide" },
+    { key: "Esc", action: "Close this guide" },
   ];
 
   return (
@@ -32,7 +49,7 @@ const KeyboardShortcutsGuide = forwardRef((props, ref) => {
               </h3>
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-slate-400 hover:text-white transition-colors"
+                className="text-slate-400 hover:text-white transition-colors cursor-pointer"
                 aria-label="Close shortcuts guide"
               >
                 <FaX size={24} />
@@ -69,7 +86,7 @@ const KeyboardShortcutsGuide = forwardRef((props, ref) => {
               </p>
               <button
                 onClick={() => setIsOpen(false)}
-                className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg transition-all active:scale-95"
+                className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg transition-all active:scale-95 cursor-pointer"
               >
                 Got it!
               </button>
