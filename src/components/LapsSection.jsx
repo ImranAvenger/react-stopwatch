@@ -139,14 +139,32 @@ export default function LapsSection({
             return (
               <div key={lap.id} className="animate-waterfall">
                 <div className="waterfall-content">
-                  <div className="flex justify-between items-center bg-linear-to-r from-slate-700/30 to-slate-700/50 p-5 rounded-xl border border-slate-600/30 hover:border-slate-500/50 hover:bg-linear-to-r hover:from-slate-700/50 hover:to-slate-700/70 transition-all">
-                    <span className="text-xl font-bold text-cyan-400">
+                  <div
+                    className={`flex justify-between items-center p-5 rounded-xl border transition-all ${
+                      isDarkMode
+                        ? "bg-linear-to-r from-slate-700/30 to-slate-700/50 border-slate-600/30 hover:border-slate-500/50 hover:bg-linear-to-r hover:from-slate-700/50 hover:to-slate-700/70"
+                        : "bg-linear-to-r from-slate-200/50 to-slate-300/50 border-slate-300/50 hover:border-slate-400/50 hover:bg-linear-to-r hover:from-slate-200/70 hover:to-slate-300/70"
+                    }`}
+                  >
+                    <span
+                      className={`text-xl font-bold ${
+                        isDarkMode ? "text-cyan-400" : "text-cyan-600"
+                      }`}
+                    >
                       {lapNumber}
                     </span>
-                    <div className="text-amber-400 font-mono font-semibold text-lg">
+                    <div
+                      className={`font-mono font-semibold text-lg ${
+                        isDarkMode ? "text-amber-400" : "text-amber-600"
+                      }`}
+                    >
                       +{formatTime(lap.lapTime)}
                     </div>
-                    <div className="text-emerald-400 font-mono font-semibold text-lg">
+                    <div
+                      className={`font-mono font-semibold text-lg ${
+                        isDarkMode ? "text-emerald-400" : "text-emerald-600"
+                      }`}
+                    >
                       {formatTime(lap.totalTime)}
                     </div>
                   </div>
