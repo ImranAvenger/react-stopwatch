@@ -59,6 +59,7 @@
 .laps-scroll {
   scrollbar-color: #64748b rgba(226, 232, 240, 0.8);
   scrollbar-width: thin;
+  scrollbar-gutter: stable;
 }
 
 /* Custom scrollbar for laps list - Dark Mode */

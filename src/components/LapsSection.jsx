@@ -120,9 +120,11 @@ export default function LapsSection({
         </span>
       </div>
 
-      <LapStatistics laps={laps} isDarkMode={isDarkMode} />
+      <div className="mb-2 mx-3">
+        <LapStatistics laps={laps} isDarkMode={isDarkMode} />
+      </div>
 
-      <div className="overflow-y-auto flex-1 min-h-0 pr-2 space-y-2 laps-scroll">
+      <div className="overflow-y-auto flex-1 min-h-0 space-y-2 laps-scroll">
         {laps.length === 0 ? (
           <div
             className={`h-full flex flex-col items-center justify-center opacity-50 transition-colors duration-300 ${
@@ -138,7 +140,7 @@ export default function LapsSection({
             const lapNumber = laps.length - index;
             return (
               <div key={lap.id} className="animate-waterfall">
-                <div className="waterfall-content">
+                <div className="waterfall-content mr-1 ml-3">
                   <div
                     className={`flex justify-between items-center p-5 rounded-xl border transition-all ${
                       isDarkMode
