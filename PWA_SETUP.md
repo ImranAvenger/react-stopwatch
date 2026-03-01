@@ -5,6 +5,7 @@ This document explains the Progressive Web App setup for the React Stopwatch app
 ## What is a Progressive Web App (PWA)?
 
 A Progressive Web App is a web application that uses modern web capabilities to deliver a user experience similar to native mobile apps. PWAs can:
+
 - Be installed on home screen
 - Work offline
 - Send push notifications
@@ -49,7 +50,10 @@ PWA-specific meta tags for better app experience:
 
 <!-- iOS Support -->
 <meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta
+  name="apple-mobile-web-app-status-bar-style"
+  content="black-translucent"
+/>
 <meta name="apple-mobile-web-app-title" content="Stopwatch" />
 <link rel="apple-touch-icon" href="/stopwatch-icon-192.svg" />
 
@@ -61,9 +65,9 @@ PWA-specific meta tags for better app experience:
 ### 4. Service Worker Registration (`src/main.jsx`)
 
 ```javascript
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js');
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/service-worker.js");
   });
 }
 ```
@@ -94,17 +98,20 @@ Registers the service worker when the page loads.
 ## Features Provided by PWA Setup
 
 ### Offline Support
+
 - All static assets are cached on first load
 - App continues to work without internet connection
 - State is saved to localStorage
 
 ### Home Screen Installation
+
 - App runs in standalone mode (no browser UI)
 - Custom app icon on home screen
 - Custom splash screen
 - Theme color matching
 
 ### App-Like Experience
+
 - Runs fullscreen (on installed apps)
 - Custom title bar
 - Fast load times from cache
@@ -115,6 +122,7 @@ Registers the service worker when the page loads.
 ### Check Service Worker Registration
 
 Open browser DevTools (F12):
+
 1. Go to **Application** tab
 2. Click **Service Workers** in left panel
 3. You should see "react-stopwatch" worker listed as active
@@ -122,6 +130,7 @@ Open browser DevTools (F12):
 ### Check Manifest
 
 In DevTools:
+
 1. Go to **Application** tab
 2. Click **Manifest** in left panel
 3. You should see all app details and icons
@@ -136,6 +145,7 @@ In DevTools:
 ### Check Cache Storage
 
 In DevTools:
+
 1. Go to **Application** tab
 2. Go to **Storage** → **Cache Storage**
 3. You should see "react-stopwatch-v1" cache
@@ -157,7 +167,7 @@ To force a new cache version:
 1. Edit `service-worker.js`
 2. Change `CACHE_NAME` to a new version:
    ```javascript
-   const CACHE_NAME = 'react-stopwatch-v2';  // was v1
+   const CACHE_NAME = "react-stopwatch-v2"; // was v1
    ```
 3. Deploy the changes
 
@@ -166,12 +176,12 @@ Old caches are automatically deleted when the new service worker activates.
 ## Browser Compatibility
 
 | Browser | Desktop | Mobile | InstallSupport |
-|---------|---------|--------|-----------------|
-| Chrome  | ✅      | ✅     | ✅              |
-| Edge    | ✅      | ✅     | ✅              |
+| ------- | ------- | ------ | -------------- |
+| Chrome  | ✅      | ✅     | ✅             |
+| Edge    | ✅      | ✅     | ✅             |
 | Firefox | ✅      | ✅     | ❌ (Partial)   |
 | Safari  | ⚠️      | ✅     | ✅ (iOS only)  |
-| Opera   | ✅      | ✅     | ✅              |
+| Opera   | ✅      | ✅     | ✅             |
 
 ✅ = Full support
 ⚠️ = Partial support
@@ -180,15 +190,20 @@ Old caches are automatically deleted when the new service worker activates.
 ## Deployment Considerations
 
 ### HTTPS Requirement
+
 Service workers require HTTPS in production. Make sure your hosting:
+
 - Uses SSL/TLS certificate
 - Redirects HTTP to HTTPS
 
 ### Dev Server
+
 For development, `localhost` and `127.0.0.1` don't require HTTPS.
 
 ### Lighthouse PWA Audit
+
 Run Lighthouse audit (DevTools → Lighthouse):
+
 - Should show "Installable" ✅
 - Should show all PWA criteria met
 - Score: 90+ for PWA
@@ -204,24 +219,28 @@ Run Lighthouse audit (DevTools → Lighthouse):
 ## Troubleshooting
 
 ### App Won't Install
+
 - Check browser console for errors (F12)
 - Ensure manifest.json is valid
 - Clear browser cache
 - Try in an incognito window
 
 ### Service Worker Not Registering
+
 - Check DevTools → Application → Service Workers
 - Look for errors in console
 - Ensure service-worker.js is in public folder
 - Verify path in main.jsx is correct
 
 ### App Not Working Offline
+
 - Check Cache Storage in DevTools
 - Ensure Service Worker is active
 - Check Network tab to see what's cached
 - Verify service-worker.js fetch handlers
 
 ### Icons Not Showing
+
 - Check manifest.json icon paths
 - Ensure icon files exist in public folder
 - Clear browser cache

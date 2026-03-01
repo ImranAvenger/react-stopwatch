@@ -32,20 +32,24 @@ This application is fully configured as a Progressive Web App:
 ### Install the App
 
 **On Chrome/Edge (Desktop/Mobile):**
+
 1. Click the install icon in the address bar (when available)
 2. Or click the menu → "Install app"
 
 **On iOS:**
+
 1. Tap Share button
 2. Select "Add to Home Screen"
 
 **On Android:**
+
 1. Open the app in Chrome
 2. Tap the menu → "Install app" or look for the install prompt
 
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js 16.x or higher
 
 ### Installation
@@ -89,6 +93,7 @@ react-stopwatch/
 ## Development
 
 The app uses:
+
 - **React 19** - UI library
 - **Vite** - Fast build tool and dev server
 - **Tailwind CSS** - Utility-first CSS framework
@@ -104,6 +109,7 @@ The app uses:
 ## Browser Support
 
 The app works on:
+
 - Chrome 64+
 - Edge 79+
 - Firefox 55+
@@ -113,4 +119,3 @@ The app works on:
 ## License
 
 MIT
-
