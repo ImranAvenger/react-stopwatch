@@ -50,8 +50,8 @@ export default function ControlPanel({
         disabled={!canRecordLap}
         className={`w-14 h-14 rounded-full text-white text-xl flex items-center justify-center transition-all active:scale-95 hover:shadow-lg enabled:cursor-pointer font-semibold ${
           isDarkMode
-            ? "bg-gradient-to-br from-violet-400 to-violet-500 hover:from-violet-500 hover:to-violet-600 disabled:bg-slate-700 disabled:text-slate-500 hover:shadow-violet-400/50"
-            : "bg-gradient-to-br from-violet-400 to-violet-500 hover:from-violet-500 hover:to-violet-600 disabled:bg-slate-300 disabled:text-slate-400 hover:shadow-violet-400/50"
+            ? "bg-linear-to-br from-violet-400 to-violet-500 hover:from-violet-500 hover:to-violet-600 disabled:bg-slate-700 disabled:text-slate-500 hover:shadow-violet-400/50"
+            : "bg-linear-to-br from-violet-400 to-violet-500 hover:from-violet-500 hover:to-violet-600 disabled:bg-slate-300 disabled:text-slate-400 hover:shadow-violet-400/50"
         }`}
         title="Record Lap (L)"
         aria-label="Record lap (Keyboard: L)"
