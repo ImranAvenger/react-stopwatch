@@ -1,192 +1,99 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useRef, useEffect } from "react";
 import runningSound from "./assets/stopwatch-running.m4a";
 import TimerDisplay from "./components/Timer/TimerDisplay";
 import LapsSection from "./components/LapsSection";
 import ControlPanel from "./components/Timer/ControlPanel";
 import KeyboardShortcutsGuide from "./components/UI/KeyboardShortcutsGuide";
 import { useTimer } from "./hooks/useTimer";
-import { useAudio } from "./hooks/useAudio";
 import { useLaps } from "./hooks/useLaps";
 import { useSoundToggle } from "./hooks/useSoundToggle";
 import { useTheme } from "./hooks/useTheme";
+import { useAppState } from "./hooks/useAppState";
+import { useStorageSync } from "./hooks/useStorageSync";
+import { useSoundEffects } from "./hooks/useSoundEffects";
+import { useTimerHandlers } from "./hooks/useTimerHandlers";
+import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
 
 export default function App() {
-  // Initialize count from localStorage
-  const [count, setCount] = useState(() => {
-    const savedCount = localStorage.getItem("stopwatch_count");
-    return savedCount ? parseInt(savedCount, 10) : 0;
-  });
-  const [isRunning, setIsRunning] = useState(false);
   const shortcutsGuideRef = useRef(null);
+
+  // State management
+  const { count, setCount, isRunning, setIsRunning } = useAppState();
   const { isSoundEnabled, toggleSound } = useSoundToggle();
   const { isDarkMode, toggleTheme } = useTheme();
   const { laps, addLap, reset: resetLaps, isFull } = useLaps();
-  const timer = useTimer(setCount, handleTimerComplete);
-  const { playSound, startRunningSound, stopRunningSound } =
-    useAudio(runningSound);
 
-  // Save count to localStorage when paused or before page unloads
-  useEffect(() => {
-    if (!isRunning && count > 0) {
-      localStorage.setItem("stopwatch_count", count.toString());
-    }
-  }, [isRunning, count]);
-
-  // Save count before page unloads
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      if (count > 0) {
-        localStorage.setItem("stopwatch_count", count.toString());
-      }
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-  }, [count]);
-
-  function handleTimerComplete(finalCount) {
+  // Timer and sound initialization
+  const timer = useTimer(setCount, (finalCount) => {
     setCount(finalCount);
     setIsRunning(false);
-    // Play completion sound
-    if (isSoundEnabled) {
-      playSound(1000, 0.15);
-      playSound(1200, 0.15);
-    }
-  }
+  });
+  const soundEffects = useSoundEffects(isSoundEnabled, runningSound);
 
-  // Handle running sound effect with seamless looping using Web Audio API
+  // Persist state
+  useStorageSync(count, isRunning);
+
+  // Timer handlers
+  const handlers = useTimerHandlers(
+    count,
+    isRunning,
+    isFull,
+    timer,
+    soundEffects,
+    { setCount, setIsRunning, resetLaps },
+  );
+
+  // Record lap with sound
+  const handleRecordLap = () => {
+    if (handlers.handleRecordLap()) {
+      addLap(count);
+    }
+  };
+
+  // Running sound loop
   useEffect(() => {
     if (isRunning && isSoundEnabled) {
-      startRunningSound();
+      soundEffects.startRunningSound();
     } else {
-      stopRunningSound();
+      soundEffects.stopRunningSound();
     }
-  }, [isRunning, isSoundEnabled, startRunningSound, stopRunningSound]);
+  }, [isRunning, isSoundEnabled, soundEffects]);
 
-  // Timer state management (pause/resume)
-  const handleToggleTimer = useCallback(() => {
-    if (isRunning) {
-      timer.pause();
-      setIsRunning(false);
-      // Play pause sound
-      if (isSoundEnabled) {
-        playSound(600, 0.08);
-      }
-    } else {
-      timer.start(count);
-      setIsRunning(true);
-      // Play start sound
-      if (isSoundEnabled) {
-        playSound(600, 0.08);
-      }
-    }
-  }, [isRunning, count, timer, isSoundEnabled, playSound]);
-
-  // Reset timer to initial state
-  const handleResetTimer = useCallback(() => {
-    timer.clear();
-    setCount(0);
-    setIsRunning(false);
-    resetLaps();
-    // Clear saved count from localStorage
-    localStorage.removeItem("stopwatch_count");
-    // Play reset sound
-    if (isSoundEnabled) {
-      playSound(400, 0.1);
-    }
-  }, [timer, isSoundEnabled, resetLaps, playSound]);
-
-  // Record a lap with total time and delta
-  const handleRecordLap = useCallback(() => {
-    if (isRunning && !isFull()) {
-      addLap(count);
-      // Play lap sound effect (beep)
-      if (isSoundEnabled) {
-        playSound(800, 0.1);
-      }
-    }
-  }, [isRunning, count, isFull, isSoundEnabled, addLap, playSound]);
-
-  // Handle keyboard shortcuts
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      // Prevent conflicts with form inputs
-      if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") {
-        return;
-      }
-
-      switch (e.code) {
-        case "Space":
-          e.preventDefault();
-          handleToggleTimer();
-          break;
-        case "KeyL":
-          handleRecordLap();
-          break;
-        case "KeyR":
-          if (!isRunning && count > 0) {
-            handleResetTimer();
-          }
-          break;
-        case "KeyS": // Control + S
-          if (e.ctrlKey || e.metaKey) {
-            e.preventDefault();
-            toggleSound();
-          }
-          break;
-        case "KeyT": // Shift + T
-          if (e.shiftKey) {
-            e.preventDefault();
-            toggleTheme();
-          }
-          break;
-        case "Slash": // Question mark key (Shift + /)
-          if (e.shiftKey) {
-            e.preventDefault();
-            shortcutsGuideRef.current?.toggleGuide();
-          }
-          break;
-        default:
-          break;
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [
+  // Keyboard shortcuts
+  useKeyboardShortcuts(
     isRunning,
     count,
-    handleToggleTimer,
-    handleRecordLap,
-    handleResetTimer,
-    toggleSound,
-    toggleTheme,
-    isFull,
-  ]);
+    shortcutsGuideRef,
+    {
+      ...handlers,
+      handleRecordLap,
+    },
+    { toggleSound, toggleTheme },
+  );
 
   return (
     <div
       className={`min-h-screen flex items-center justify-center p-4 transition-colors duration-300 ${isDarkMode ? "bg-slate-900" : "bg-white"}`}
     >
       <div className="w-full h-[90vh] grid grid-cols-1 grid-rows-2 gap-4 landscape:max-w-full landscape:h-[95vh] landscape:grid-cols-2 landscape:grid-rows-1">
-        {/* Left side: Display and Controls */}
-        <div
+        {/* Timer Display & Controls */}
+        <section
           className={`rounded-3xl shadow-2xl p-6 border flex flex-col gap-4 landscape:justify-between landscape:min-h-0 w-full transition-colors duration-300 ${isDarkMode ? "bg-slate-800 border-slate-700" : "bg-slate-50 border-slate-300"}`}
         >
           <TimerDisplay count={count} isDarkMode={isDarkMode} />
           <ControlPanel
             isRunning={isRunning}
-            onToggleTimer={handleToggleTimer}
+            onToggleTimer={handlers.handleToggleTimer}
             onRecordLap={handleRecordLap}
-            onReset={handleResetTimer}
+            onReset={handlers.handleResetTimer}
             canRecordLap={isRunning && !isFull()}
             canReset={!isRunning && count > 0}
             isDarkMode={isDarkMode}
           />
-        </div>
+        </section>
 
-        {/* Right side: Laps */}
-        <div className="landscape:min-h-0 w-full">
+        {/* Laps Section */}
+        <section className="landscape:min-h-0 w-full">
           <LapsSection
             laps={laps}
             shortcutsGuideRef={shortcutsGuideRef}
@@ -195,10 +102,10 @@ export default function App() {
             isDarkMode={isDarkMode}
             onToggleTheme={toggleTheme}
           />
-        </div>
+        </section>
       </div>
 
-      {/* Keyboard Shortcuts Guide */}
+      {/* Keyboard Shortcuts Modal */}
       <KeyboardShortcutsGuide ref={shortcutsGuideRef} isDarkMode={isDarkMode} />
     </div>
   );
