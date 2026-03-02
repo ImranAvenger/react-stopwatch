@@ -73,21 +73,60 @@ npm run preview
 ```
 react-stopwatch/
 ├── public/
-│   ├── manifest.json              # PWA manifest
+│   ├── manifest.json              # PWA manifest configuration
 │   ├── service-worker.js          # Service worker for offline support
-│   ├── stopwatch-icon-*.svg       # App icons
-│   └── vite.svg
+│   └── assets/
 ├── src/
-│   ├── components/                # React components
+│   ├── components/
+│   │   ├── LapsPanel.jsx          # Main laps panel component
+│   │   ├── TimerSection.jsx       # Timer section component
+│   │   ├── LapsSection/           # Laps management
+│   │   │   ├── index.jsx
+│   │   │   ├── LapsHeader.jsx
+│   │   │   ├── LapsList.jsx
+│   │   │   ├── LapItem.jsx
+│   │   │   ├── LapStatistics.jsx
+│   │   │   ├── EmptyLapsState.jsx
+│   │   │   └── constants.js
+│   │   ├── Timer/                 # Timer display & controls
+│   │   │   ├── TimerDisplay.jsx
+│   │   │   ├── DigitDisplay.jsx
+│   │   │   └── ControlPanel.jsx
+│   │   └── UI/                    # UI components
+│   │       ├── ThemeToggle.jsx    # Dark/Light theme switcher
+│   │       ├── SoundToggle.jsx    # Audio effects toggle
+│   │       ├── ShortcutsButton.jsx
+│   │       ├── KeyboardShortcutsGuide.jsx
+│   │       ├── CopyButton.jsx
+│   │       └── constants.js
 │   ├── hooks/                     # Custom React hooks
+│   │   ├── useAppState.js         # Global app state
+│   │   ├── useAppInitialization.js # Initialization logic
+│   │   ├── useAppEffects.js       # Side effects management
+│   │   ├── useAppHandlers.js      # Event handlers
+│   │   ├── useTimer.js            # Timer logic
+│   │   ├── useTimerHandlers.js    # Timer control handlers
+│   │   ├── useLaps.js             # Lap management
+│   │   ├── useKeyboardShortcuts.js # Keyboard event handling
+│   │   ├── useTheme.js            # Theme management
+│   │   ├── useSoundToggle.js      # Sound toggle state
+│   │   ├── useSoundEffects.js     # Sound effects management
+│   │   ├── useAudio.js            # Audio utilities
+│   │   ├── useRunningSound.js     # Running timer sound
+│   │   └── useStorageSync.js      # localStorage persistence
 │   ├── utils/                     # Utility functions
+│   │   ├── audioManager.js        # Audio processing
+│   │   ├── formatTime.js          # Time formatting
+│   │   └── styleHelpers.js        # Style utilities
 │   ├── App.jsx                    # Main app component
 │   ├── index.css                  # Global styles
-│   └── main.jsx                   # Entry point
+│   ├── main.jsx                   # React entry point
+│   └── assets/
 ├── index.html                     # HTML template with PWA meta tags
-├── vite.config.js                 # Vite configuration
-├── eslint.config.js               # ESLint configuration
-└── package.json
+├── vite.config.js                 # Vite build configuration
+├── eslint.config.js               # ESLint rules
+├── package.json                   # Dependencies and scripts
+└── README.md
 ```
 
 ## Development
