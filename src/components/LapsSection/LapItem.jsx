@@ -8,13 +8,19 @@ export default function LapItem({ lap, lapNumber, isDarkMode }) {
         <div
           className={`flex justify-between items-center p-5 rounded-xl border transition-all ${getLapItemThemeClasses(isDarkMode)}`}
         >
-          <span className={`text-xl font-bold ${getTextThemeClasses(isDarkMode, "cyan")}`}>
+          <span
+            className={`text-xl font-bold ${getTextThemeClasses(isDarkMode, "cyan")}`}
+          >
             {lapNumber}
           </span>
-          <div className={`font-mono font-semibold text-lg ${getTextThemeClasses(isDarkMode, "amber")}`}>
+          <div
+            className={`font-mono font-semibold text-lg ${getTextThemeClasses(isDarkMode, "amber")}`}
+          >
             +{formatTime(lap.lapTime)}
           </div>
-          <div className={`font-mono font-semibold text-lg ${getTextThemeClasses(isDarkMode, "emerald")}`}>
+          <div
+            className={`font-mono font-semibold text-lg ${getTextThemeClasses(isDarkMode, "emerald")}`}
+          >
             {formatTime(lap.totalTime)}
           </div>
         </div>

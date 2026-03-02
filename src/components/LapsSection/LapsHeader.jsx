@@ -34,7 +34,9 @@ export default function LapsHeader({
         />
         <ThemeToggle isDarkMode={isDarkMode} onToggle={onToggleTheme} />
       </div>
-      <div className={`text-sm font-normal transition-colors duration-300 ${getTextThemeClasses(isDarkMode)}`}>
+      <div
+        className={`text-sm font-normal transition-colors duration-300 ${getTextThemeClasses(isDarkMode)}`}
+      >
         {laps.length} / {MAX_LAPS}
       </div>
     </div>

@@ -1,7 +1,12 @@
 import { FaCopy, FaCheck } from "react-icons/fa6";
 import { getButtonThemeClasses } from "./constants";
 
-export default function CopyButton({ isCopied, isDarkMode, lapsCount, onCopy }) {
+export default function CopyButton({
+  isCopied,
+  isDarkMode,
+  lapsCount,
+  onCopy,
+}) {
   const isDisabled = lapsCount === 0;
 
   return (
