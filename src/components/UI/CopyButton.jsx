@@ -1,5 +1,5 @@
 import { FaCopy, FaCheck } from "react-icons/fa6";
-import { getButtonThemeClasses } from "../LapsSection/constants";
+import { getButtonThemeClasses } from "./constants";
 
 export default function CopyButton({
   isCopied,

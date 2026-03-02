@@ -1,4 +1,4 @@
-import { formatTime } from "../utils/formatTime";
+import { formatTime } from "../../utils/formatTime";
 
 export default function LapStatistics({ laps, isDarkMode }) {
   if (laps.length === 0) return null;

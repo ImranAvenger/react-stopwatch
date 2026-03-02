@@ -1,7 +1,7 @@
 import SoundToggle from "../UI/SoundToggle";
 import ThemeToggle from "../UI/ThemeToggle";
 import CopyButton from "../UI/CopyButton";
-import ShortcutsButton from "./ShortcutsButton";
+import ShortcutsButton from "../UI/ShortcutsButton";
 import { MAX_LAPS, getTextThemeClasses } from "./constants";
 
 export default function LapsHeader({

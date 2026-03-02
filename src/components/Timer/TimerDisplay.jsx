@@ -1,5 +1,5 @@
 import DigitDisplay from "./DigitDisplay";
-import { formatTime } from "../utils/formatTime";
+import { formatTime } from "../../utils/formatTime";
 
 export default function TimerDisplay({ count, isDarkMode }) {
   return (
