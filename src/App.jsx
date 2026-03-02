@@ -3,7 +3,7 @@ import runningSound from "./assets/stopwatch-running.m4a";
 import TimerDisplay from "./components/TimerDisplay";
 import LapsSection from "./components/LapsSection";
 import ControlPanel from "./components/ControlPanel";
-import KeyboardShortcutsGuide from "./components/KeyboardShortcutsGuide";
+import KeyboardShortcutsGuide from "./components/UI/KeyboardShortcutsGuide";
 import { useTimer } from "./hooks/useTimer";
 import { useAudio } from "./hooks/useAudio";
 import { useLaps } from "./hooks/useLaps";

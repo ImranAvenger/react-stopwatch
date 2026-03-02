@@ -1,6 +1,6 @@
-import SoundToggle from "../SoundToggle";
-import ThemeToggle from "../ThemeToggle";
-import CopyButton from "./CopyButton";
+import SoundToggle from "../UI/SoundToggle";
+import ThemeToggle from "../UI/ThemeToggle";
+import CopyButton from "../UI/CopyButton";
 import ShortcutsButton from "./ShortcutsButton";
 import { MAX_LAPS, getTextThemeClasses } from "./constants";
 
