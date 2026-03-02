@@ -21,8 +21,8 @@ export default function ControlPanel({
         disabled={!canReset}
         className={`w-14 h-14 rounded-full text-white text-xl flex items-center justify-center transition-all active:scale-95 hover:shadow-lg enabled:cursor-pointer font-semibold ${
           isDarkMode
-            ? "bg-gradient-to-br from-rose-400 to-rose-500 hover:from-rose-500 hover:to-rose-600 disabled:bg-slate-700 disabled:text-slate-500 hover:shadow-rose-400/50"
-            : "bg-gradient-to-br from-rose-400 to-rose-500 hover:from-rose-500 hover:to-rose-600 disabled:bg-slate-300 disabled:text-slate-400 hover:shadow-rose-400/50"
+            ? "bg-linear-to-br from-rose-400 to-rose-500 hover:from-rose-500 hover:to-rose-600 disabled:bg-slate-700 disabled:text-slate-500 hover:shadow-rose-400/50"
+            : "bg-linear-to-br from-rose-400 to-rose-500 hover:from-rose-500 hover:to-rose-600 disabled:bg-slate-300 disabled:text-slate-400 hover:shadow-rose-400/50"
         }`}
         title="Reset (R)"
         aria-label="Reset stopwatch (Keyboard: R)"
