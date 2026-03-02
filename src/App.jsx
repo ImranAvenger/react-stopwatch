@@ -1,9 +1,8 @@
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 import runningSound from "./assets/stopwatch-running.m4a";
-import TimerDisplay from "./components/Timer/TimerDisplay";
-import LapsSection from "./components/LapsSection";
-import ControlPanel from "./components/Timer/ControlPanel";
 import KeyboardShortcutsGuide from "./components/UI/KeyboardShortcutsGuide";
+import TimerSection from "./components/TimerSection";
+import LapsPanel from "./components/LapsPanel";
 import { useTimer } from "./hooks/useTimer";
 import { useLaps } from "./hooks/useLaps";
 import { useSoundToggle } from "./hooks/useSoundToggle";
@@ -13,6 +12,8 @@ import { useStorageSync } from "./hooks/useStorageSync";
 import { useSoundEffects } from "./hooks/useSoundEffects";
 import { useTimerHandlers } from "./hooks/useTimerHandlers";
 import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
+import { useRunningSound } from "./hooks/useRunningSound";
+import { getPageBgClass, getLayoutGridClass } from "./utils/styleHelpers";
 
 export default function App() {
   const shortcutsGuideRef = useRef(null);
@@ -51,13 +52,7 @@ export default function App() {
   };
 
   // Running sound loop
-  useEffect(() => {
-    if (isRunning && isSoundEnabled) {
-      soundEffects.startRunningSound();
-    } else {
-      soundEffects.stopRunningSound();
-    }
-  }, [isRunning, isSoundEnabled, soundEffects]);
+  useRunningSound(isRunning, isSoundEnabled, soundEffects);
 
   // Keyboard shortcuts
   useKeyboardShortcuts(
@@ -73,39 +68,28 @@ export default function App() {
 
   return (
     <div
-      className={`min-h-screen flex items-center justify-center p-4 transition-colors duration-300 ${isDarkMode ? "bg-slate-900" : "bg-white"}`}
+      className={`min-h-screen flex items-center justify-center p-4 transition-colors duration-300 ${getPageBgClass(isDarkMode)}`}
     >
-      <div className="w-full h-[90vh] grid grid-cols-1 grid-rows-2 gap-4 landscape:max-w-full landscape:h-[95vh] landscape:grid-cols-2 landscape:grid-rows-1">
-        {/* Timer Display & Controls */}
-        <section
-          className={`rounded-3xl shadow-2xl p-6 border flex flex-col gap-4 landscape:justify-between landscape:min-h-0 w-full transition-colors duration-300 ${isDarkMode ? "bg-slate-800 border-slate-700" : "bg-slate-50 border-slate-300"}`}
-        >
-          <TimerDisplay count={count} isDarkMode={isDarkMode} />
-          <ControlPanel
-            isRunning={isRunning}
-            onToggleTimer={handlers.handleToggleTimer}
-            onRecordLap={handleRecordLap}
-            onReset={handlers.handleResetTimer}
-            canRecordLap={isRunning && !isFull()}
-            canReset={!isRunning && count > 0}
-            isDarkMode={isDarkMode}
-          />
-        </section>
+      <div className={getLayoutGridClass()}>
+        <TimerSection
+          count={count}
+          isRunning={isRunning}
+          isDarkMode={isDarkMode}
+          isFull={isFull}
+          handlers={handlers}
+          handleRecordLap={handleRecordLap}
+        />
 
-        {/* Laps Section */}
-        <section className="landscape:min-h-0 w-full">
-          <LapsSection
-            laps={laps}
-            shortcutsGuideRef={shortcutsGuideRef}
-            isSoundEnabled={isSoundEnabled}
-            onToggleSound={toggleSound}
-            isDarkMode={isDarkMode}
-            onToggleTheme={toggleTheme}
-          />
-        </section>
+        <LapsPanel
+          laps={laps}
+          shortcutsGuideRef={shortcutsGuideRef}
+          isSoundEnabled={isSoundEnabled}
+          onToggleSound={toggleSound}
+          isDarkMode={isDarkMode}
+          onToggleTheme={toggleTheme}
+        />
       </div>
 
-      {/* Keyboard Shortcuts Modal */}
       <KeyboardShortcutsGuide ref={shortcutsGuideRef} isDarkMode={isDarkMode} />
     </div>
   );
