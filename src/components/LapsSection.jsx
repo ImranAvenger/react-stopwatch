@@ -120,7 +120,7 @@ export default function LapsSection({
         </span>
       </div>
 
-      <div className="mb-2 mx-3">
+      <div className="mb-2">
         <LapStatistics laps={laps} isDarkMode={isDarkMode} />
       </div>
 
@@ -140,7 +140,7 @@ export default function LapsSection({
             const lapNumber = laps.length - index;
             return (
               <div key={lap.id} className="animate-waterfall">
-                <div className="waterfall-content mr-1 ml-3">
+                <div className="waterfall-content">
                   <div
                     className={`flex justify-between items-center p-5 rounded-xl border transition-all ${
                       isDarkMode
