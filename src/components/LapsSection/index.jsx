@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import LapStatistics from "../LapStatistics";
+import LapStatistics from "./LapStatistics";
 import LapsHeader from "./LapsHeader";
 import LapsList from "./LapsList";
 import {
