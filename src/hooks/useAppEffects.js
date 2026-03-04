@@ -9,6 +9,7 @@ export function useAppEffects(appState, handlers, shortcutsGuideRef, services) {
   // Running sound loop
   useRunningSound(appState.isRunning, appState.isSoundEnabled, services.soundEffects);
 
+
   // Keyboard shortcuts
   
   useKeyboardShortcuts(
